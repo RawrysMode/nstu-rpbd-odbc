@@ -42,6 +42,7 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	cout << "Choose option:" << endl;
 	cout << "1 : Cities" << endl;
 	cout << "2 : Routes" << endl;
+	cout << "3 : Jobs" << endl;
 	cout << "q : Exit" << endl << endl;
 
 	cout << "> ";
@@ -52,6 +53,9 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	}
 	else if (*option == "2") {
 		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Routes"));
+	}
+	else if (*option == "3") {
+		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Jobs"));
 	}
 }
 

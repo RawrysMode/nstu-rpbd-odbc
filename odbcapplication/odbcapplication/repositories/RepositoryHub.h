@@ -3,8 +3,9 @@
 
 #include "CityRepository.h"
 #include "RouteRepository.h"
+#include "JobRepository.h"
 #include "RepositoryNotFound.h"
-#include "../dialog/DialogForm.h"
+#include "dialog/DialogForm.h"
 
 class RepositoryHub {
 
@@ -14,11 +15,13 @@ protected:
 public:
 	CityRepository cityRepository;
 	RouteRepository routeRepository;
+	RouteRepository jobRepository;
 	RepositoryHub() {}
 
 	RepositoryHub(DbConnector dbConnector) {
 		cityRepository = CityRepository(dbConnector);
 		routeRepository = RouteRepository(dbConnector);
+		jobRepository = JobRepository(dbConnector);
 	}
 
 	void init() {

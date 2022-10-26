@@ -1,8 +1,8 @@
-﻿#include<windows.h>
-#include<sql.h>
-#include<sqlext.h> 
-#include<string.h>
-#include<iostream>  
+﻿#include <windows.h>
+#include <sql.h>
+#include <sqlext.h> 
+#include <string.h>
+#include <iostream>  
 #include <windef.h>
 #include "DbConnector.h"
 #include "dialog/DialogProcessor.h"
