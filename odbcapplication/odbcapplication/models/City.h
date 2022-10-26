@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class City : public ActiveRecord {
+class City: public ActiveRecord {
 
 private:
 	int insert(HDBC hDBC) override;

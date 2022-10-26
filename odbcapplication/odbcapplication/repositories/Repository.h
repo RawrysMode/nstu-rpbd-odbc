@@ -36,7 +36,7 @@ public:
 		if (dbConnector.isConnected()) {
 			model.remove(dbConnector.getDBC());
 		}
-
+		
 		vector<T> newModels = {};
 		for (int i = 0; i < models.size(); i++) {
 			if ((models[i] == model) == false) {

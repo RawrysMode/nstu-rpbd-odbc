@@ -1,8 +1,8 @@
 #ifndef JOB_REPOSITORY_H
 #define JOB_REPOSITORY_H
 
-#include "repositories/Repository.h"
-#include "models/Job.h"
+#include "Repository.h"
+#include "../models/Job.h"
 using namespace std;
 
 

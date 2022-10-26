@@ -23,14 +23,13 @@ void DialogProcessor::displayModelLabels(vector<string> modelLabels, int pageSiz
 
 	if (!search.empty()) {
 		cout << "-- (search: \"" << search << "\")" << endl;
-	}
-	else {
-		cout << "--" << endl;
+	} else {
+		cout << "--" << endl; 
 	}
 
 	if (!modelLabels.empty() && showSearchAndPagination) {
 		int maxPageNumber = totalModelsCount / pageSize + (totalModelsCount % pageSize != 0);
-		cout << "Shown page " << (offset + 1) << "/" << maxPageNumber << " (models " << (pageSize * offset + 1) << "-"
+		cout << "Shown page " << (offset + 1) << "/" << maxPageNumber  << " (models " << (pageSize * offset + 1) << "-"
 			<< min(pageSize * (offset + 1), totalModelsCount) << "/"
 			<< totalModelsCount << ")" << endl;
 	}
@@ -54,9 +53,6 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	else if (*option == "2") {
 		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Routes"));
 	}
-	else if (*option == "3") {
-		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Jobs"));
-	}
 }
 
 void DialogProcessor::processRouteModelView(DialogRoute route, string* option) {
@@ -74,13 +70,13 @@ void DialogProcessor::processRouteModelView(DialogRoute route, string* option) {
 		if (totalModelsCount > 0) {
 			cout << "1-" << maxPageNumber << " : Go to page" << endl;
 		}
-
+	
 		cout << "s : Search" << endl;
 		if (!route.search.empty()) {
 			cout << "x : Clear search" << endl;
 		}
 	}
-
+	
 	cout << "a : Add model" << endl;
 	cout << "e : Edit model" << endl;
 	cout << "d : Delete model" << endl;
@@ -150,7 +146,7 @@ void DialogProcessor::processRouteModelDelete(DialogRoute route, string* option)
 	int maxNumber = min(pageSize * (route.offset + 1), totalModelsCount);
 	cout << "Enter model number to delete (" << minNumber << "-" << maxNumber << "): ";
 	cin >> *option;
-
+		
 	char* p;
 	long modelNumber = strtol(option->c_str(), &p, 10);
 	if (!*p && modelNumber >= minNumber && modelNumber <= maxNumber) {
@@ -163,8 +159,7 @@ void DialogProcessor::processRouteModelDelete(DialogRoute route, string* option)
 			}
 
 			routes[routes.size() - 2].errorMessage = "Model " + modelLabels[idx] + " deleted.";
-		}
-		else {
+		} else {
 			routes[routes.size() - 2].errorMessage = "Couldn't delete model " + modelLabels[idx] + " because it is used by another models.";
 		}
 	}
@@ -177,27 +172,23 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 		if (repositoryHub.saveModel(route)) {
 			if (route.dialogForm.modelId == 0) {
 				routes[routes.size() - 2].errorMessage = "Model has been added.";
-			}
-			else {
+			} else {
 				routes[routes.size() - 2].errorMessage = "Model has been updated.";
 				popRoute();
 			}
-		}
-		else {
+		} else {
 			if (route.dialogForm.modelId == 0) {
 				routes[routes.size() - 2].errorMessage = "Model is not added.";
-			}
-			else {
+			} else {
 				routes[routes.size() - 2].errorMessage = "Model is not updated.";
 				popRoute();
 			}
 		}
 
 		*option = "q";
-	}
-	else {
+	} else {
 		DialogFormStep step = route.dialogForm.steps[route.dialogForm.currentStepId];
-
+		
 		if (step.type == DialogFormFieldType::FT_STRING) {
 			cout << step.title;
 			if (route.dialogForm.modelId != 0) {
@@ -209,8 +200,7 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 					text = step.sValue;
 				}
 				routes[routes.size() - 1].dialogForm.steps[route.dialogForm.currentStepId].sValue = text;
-			}
-			else {
+			} else {
 				cout << ": ";
 				cin >> routes[routes.size() - 1].dialogForm.steps[route.dialogForm.currentStepId].sValue;
 			}
@@ -218,7 +208,7 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			if (routes[routes.size() - 1].dialogForm.steps[route.dialogForm.currentStepId].sValue.empty()) {
 				return;
 			}
-		}
+		} 
 		else if (step.type == DialogFormFieldType::FT_INT) {
 			cout << step.title;
 			if (route.dialogForm.modelId != 0) {
@@ -307,7 +297,7 @@ void DialogProcessor::processRouteModelPick(DialogRoute route, string* option) {
 		if (route.offset < maxPageNumber - 1) {
 			cout << "e : Next page" << endl;
 		}
-
+	
 		cout << "s : Search" << endl;
 		if (!route.search.empty()) {
 			cout << "x : Clear search" << endl;
@@ -370,8 +360,7 @@ void DialogProcessor::processRouteModelEditSelect(DialogRoute route, string* opt
 		DialogRoute editModelRoute = DialogRoute(DialogRouteType::MODEL_EDIT, route.modelName, route.offset, route.search);
 		editModelRoute.dialogForm = repositoryHub.getModelEditDialogForm(route, idx);
 		pushRoute(editModelRoute);
-	}
-	else {
+	} else {
 		*option = "q";
 	}
 }
@@ -381,7 +370,7 @@ DialogProcessor::DialogProcessor(RepositoryHub repositoryHub, string initialText
 	this->showSearchAndPagination = showSearchAndPagination;
 	pushRoute(DialogRoute(DialogRouteType::ENTRY, initialText));
 }
-
+	
 
 bool DialogProcessor::isFinished() {
 	return routes.size() == 0;
@@ -405,37 +394,37 @@ void DialogProcessor::processRoute() {
 
 	switch (route.type) {
 
-	case DialogRouteType::ENTRY:
-		processRouteEntry(route, &option);
-		break;
+		case DialogRouteType::ENTRY:
+			processRouteEntry(route, &option);
+			break;
 
-	case DialogRouteType::MODEL_VIEW:
-		processRouteModelView(route, &option);
-		break;
+		case DialogRouteType::MODEL_VIEW:
+			processRouteModelView(route, &option);
+			break;
 
-	case DialogRouteType::MODEL_SEARCH:
-		processRouteModelSearch(route, &option);
-		break;
+		case DialogRouteType::MODEL_SEARCH:
+			processRouteModelSearch(route, &option);
+			break;
 
-	case DialogRouteType::MODEL_DELETE:
-		processRouteModelDelete(route, &option);
-		break;
+		case DialogRouteType::MODEL_DELETE:
+			processRouteModelDelete(route, &option);
+			break;
 
-	case DialogRouteType::MODEL_ADD:
-		processRouteModelAdd(route, &option);
-		break;
+		case DialogRouteType::MODEL_ADD:
+			processRouteModelAdd(route, &option);
+			break;
 
-	case DialogRouteType::MODEL_EDIT_SELECT:
-		processRouteModelEditSelect(route, &option);
-		break;
+		case DialogRouteType::MODEL_EDIT_SELECT:
+			processRouteModelEditSelect(route, &option);
+			break;
 
-	case DialogRouteType::MODEL_EDIT:
-		processRouteModelEdit(route, &option);
-		break;
+		case DialogRouteType::MODEL_EDIT:
+			processRouteModelEdit(route, &option);
+			break;
 
-	case DialogRouteType::MODEL_PICK:
-		processRouteModelPick(route, &option);
-		break;
+		case DialogRouteType::MODEL_PICK:
+			processRouteModelPick(route, &option);
+			break;
 	}
 
 	if (option == "q") {

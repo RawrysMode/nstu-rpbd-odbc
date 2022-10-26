@@ -9,6 +9,8 @@
 using namespace std;
 
 class DialogForm {
+	
+
 public:
 	int currentStepId = 0;
 	int modelId = 0;

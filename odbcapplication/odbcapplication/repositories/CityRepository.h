@@ -26,21 +26,19 @@ public:
 			if (city.id == 0) {
 				city.id = std::time(0);
 				models.push_back(city);
-			}
-			else {
+			} else {
 				vector<City> newModels = {};
 				for (int i = 0; i < models.size(); i++) {
 					if (models[i].id == city.id) {
 						newModels.push_back(city);
-					}
-					else {
+					} else {
 						newModels.push_back(models[i]);
 					}
 				}
 
 				models = newModels;
 			}
-
+			
 
 			return true;
 		}

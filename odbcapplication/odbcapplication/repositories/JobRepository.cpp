@@ -1,6 +1,6 @@
 #include "JobRepository.h"
-#include "DbConnector.h"
-#include "models/Job.h"
+#include "../DbConnector.h"
+#include "../models/Job.h"
 
 int JobRepository::loadModelsCount() {
     return loadModelsCount("");

@@ -26,21 +26,19 @@ public:
 			if (route.id == 0) {
 				route.id = std::time(0);
 				models.push_back(route);
-			}
-			else {
+			} else {
 				vector<Route> newModels = {};
 				for (int i = 0; i < models.size(); i++) {
 					if (models[i].id == route.id) {
 						newModels.push_back(route);
-					}
-					else {
+					} else {
 						newModels.push_back(models[i]);
 					}
 				}
 
 				models = newModels;
 			}
-
+			
 
 			return true;
 		}
