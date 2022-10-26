@@ -1,12 +1,11 @@
 #ifndef JOBS_H
 #define JOBS_H
 
-#include<windows.h>
-#include<sql.h>
-#include<sqlext.h>
-#include<iostream>
+#include <windows.h>
+#include <sql.h>
+#include <sqlext.h>
+#include <iostream>
 #include "ActiveRecord.h"
-#include "City.h"
 
 using namespace std;
 

@@ -9,7 +9,7 @@
 
 class RepositoryHub {
 
-protected: 
+protected:
 	DbConnector dbConnector;
 
 public:
@@ -33,20 +33,24 @@ public:
 	void getModelViewRouteData(DialogRoute route, int* totalModelsCount, int* pageSize, string search, vector<string>* modelLabels) {
 		if (route.modelName == "Cities") {
 			cityRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
-		} else if (route.modelName == "Routes") {
+		}
+		else if (route.modelName == "Routes") {
 			routeRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
-		} else if (route.modelName == "Jobs") {
-			routeRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
+		}
+		else if (route.modelName == "Jobs") {
+			jobRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
 		}
 	}
 
 	int getModelId(DialogRoute route, int number, string search, int offset) {
 		if (route.modelName == "Cities") {
 			return cityRepository.loadModels(search, offset)[number].id;
-		} else if (route.modelName == "Routes") {
+		}
+		else if (route.modelName == "Routes") {
 			return routeRepository.loadModels(search, offset)[number].id;
-		} else if (route.modelName == "Jobs") {
-			return routeRepository.loadModels(search, offset)[number].id;
+		}
+		else if (route.modelName == "Jobs") {
+			return jobRepository.loadModels(search, offset)[number].id;
 		}
 	}
 
@@ -58,11 +62,11 @@ public:
 			return DialogForm({ DialogFormStep("Job title", DialogFormFieldType::FT_STRING, "job_title", "") });
 		}
 		else if (route.modelName == "Routes") {
-			return DialogForm({ 
+			return DialogForm({
 				DialogFormStep("Route cost", DialogFormFieldType::FT_INT, "route_cost", ""),
 				DialogFormStep("Select departure city from the list: ", DialogFormFieldType::FT_CITY, "departure_city_id", ""),
 				DialogFormStep("Select destination city from the list: ", DialogFormFieldType::FT_CITY, "destination_city_id", "")
-			});
+				});
 		}
 
 		return DialogForm();
@@ -75,7 +79,7 @@ public:
 		}
 		else if (route.modelName == "Jobs") {
 			Job model = jobRepository.loadModels(route.search, route.offset * jobRepository.pageSize)[number];
-			return DialogForm(model.id, { DialogFormStep("Job Title", DialogFormFieldType::FT_STRING, "job title", model.jobTitle) });
+			return DialogForm(model.id, { DialogFormStep("Job Title", DialogFormFieldType::FT_STRING, "job_title", model.jobTitle) });
 		}
 		else if (route.modelName == "Routes") {
 			Route model = routeRepository.loadModels(route.search, route.offset * cityRepository.pageSize)[number];
@@ -83,7 +87,7 @@ public:
 				DialogFormStep("Route cost", DialogFormFieldType::FT_INT, "route_cost", model.routeCost),
 				DialogFormStep("Select departure city from the list: ", DialogFormFieldType::FT_CITY, "departure_city_id", model.departureCityId),
 				DialogFormStep("Select destination city from the list: ", DialogFormFieldType::FT_CITY, "destination_city_id", model.destinationCityId)
-			});
+				});
 		}
 
 		return DialogForm();
@@ -92,12 +96,16 @@ public:
 	bool saveModel(DialogRoute route) {
 		if (route.modelName == "Cities") {
 			return cityRepository.saveModel(City(route.dialogForm.modelId, route.dialogForm.steps[0].sValue));
-		} else if (route.modelName == "Routes") {
+		}
+		else if (route.modelName == "Routes") {
 			Route routeM = Route(route.dialogForm.modelId);
 			routeM.routeCost = route.dialogForm.steps[0].iValue;
 			routeM.setDepartureCity(City(route.dialogForm.steps[1].iValue));
 			routeM.setDestinationCity(City(route.dialogForm.steps[2].iValue));
 			return routeRepository.saveModel(routeM);
+		}
+		else if (route.modelName == "Jobs") {
+			return jobRepository.saveModel(Job(route.dialogForm.modelId, route.dialogForm.steps[0].sValue));
 		}
 
 		return false;
@@ -107,9 +115,14 @@ public:
 		if (route.modelName == "Cities") {
 			City model = cityRepository.loadModels(route.search, route.offset * cityRepository.pageSize)[number];
 			cityRepository.deleteModel(model);
-		} else if (route.modelName == "Routes") {
+		}
+		else if (route.modelName == "Routes") {
 			Route model = routeRepository.loadModels(route.search, route.offset * routeRepository.pageSize)[number];
 			routeRepository.deleteModel(model);
+		}
+		else if (route.modelName == "Jobs") {
+			Job model = jobRepository.loadModels(route.search, route.offset * cityRepository.pageSize)[number];
+			jobRepository.deleteModel(model);
 		}
 
 		return true;

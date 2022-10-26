@@ -53,6 +53,9 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	else if (*option == "2") {
 		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Routes"));
 	}
+	else if (*option == "3") {
+		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Jobs"));
+	}
 }
 
 void DialogProcessor::processRouteModelView(DialogRoute route, string* option) {

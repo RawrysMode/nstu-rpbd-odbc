@@ -88,7 +88,7 @@ Job Job::load(HDBC hDBC) {
     RETCODE retCode;
     SQLLEN cbValue = SQL_NTS;
     HSTMT hStmt;
-    const int JOB_TITLE_LEN = 25;
+    const int JOB_TITLE_LEN = 45;
     SQLCHAR jobTitle[JOB_TITLE_LEN];
     SQLLEN jobId = 0, jobIdLen = 0, jobTitleLen = 0;
 
