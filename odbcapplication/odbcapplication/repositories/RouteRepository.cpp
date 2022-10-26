@@ -68,7 +68,7 @@ vector<Route> RouteRepository::loadModels(string search, int offset) {
             Route route = Route(routeId);
             route.routeCost = routeCost;
             route.setDepartureCity(City((long long)departureCityId).load(dbConnector.getDBC()));
-            route.setDestinationCity(City((long long)departureCityId).load(dbConnector.getDBC()));
+            route.setDestinationCity(City((long long)destinationCityId).load(dbConnector.getDBC()));
             newModels.push_back(route);
         } else {
             break;

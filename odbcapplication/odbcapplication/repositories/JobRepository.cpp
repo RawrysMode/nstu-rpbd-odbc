@@ -56,7 +56,7 @@ vector<Job> JobRepository::loadModels(string search, int offset) {
         return models;
     }
 
-    const int JOB_TITLE_LEN = 25;
+    const int JOB_TITLE_LEN = 40;
     SQLCHAR jobTitle[JOB_TITLE_LEN];
     SQLLEN jobId = 0, jobIdLen = 0, jobNameLen = 0;
 

@@ -1,4 +1,5 @@
 #include "Route.h"
+#include "City.h"
 
 Route::Route() {
     this->id = 0;
