@@ -60,8 +60,9 @@ void DbConnector::querySql(const char* sql) {
     try {
         checkRetCodeException(SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt));
         checkRetCodeException(SQLExecDirectA(hStmt, (SQLCHAR*)sql, SQL_NTS));
-    } catch (const char* msg) {}
-    
+    }
+    catch (const char* msg) {}
+
     SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 }
 
@@ -95,7 +96,7 @@ int DbConnector::getRowsCount(const char* tableName, std::string search, std::st
 
     SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt);
     try {
-        checkRetCodeException(SQLExecDirectA(hStmt, (SQLCHAR *)sql.c_str(), SQL_NTS));
+        checkRetCodeException(SQLExecDirectA(hStmt, (SQLCHAR*)sql.c_str(), SQL_NTS));
         checkRetCodeException(SQLBindCol(hStmt, 1, SQL_C_SBIGINT, &rowsCount, 0, &rowsCountLen));
         SQLFetch(hStmt);
     }
@@ -103,6 +104,6 @@ int DbConnector::getRowsCount(const char* tableName, std::string search, std::st
         std::cout << exc.what() << std::endl;
     }
     SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
-    
+
     return rowsCount;
 }

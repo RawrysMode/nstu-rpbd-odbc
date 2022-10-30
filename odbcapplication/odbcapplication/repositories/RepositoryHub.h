@@ -16,11 +16,15 @@ public:
 	CityRepository cityRepository;
 	RouteRepository routeRepository;
 	JobRepository jobRepository;
-	RepositoryHub() {}
+	RepositoryHub() {
+		cityRepository = CityRepository();
+		routeRepository = RouteRepository();
+		jobRepository = JobRepository();
+	}
 
 	RepositoryHub(DbConnector dbConnector) {
 		cityRepository = CityRepository(dbConnector);
-		routeRepository = RouteRepository(dbConnector);
+		routeRepository = RouteRepository(dbConnector, &cityRepository);
 		jobRepository = JobRepository(dbConnector);
 	}
 
@@ -83,11 +87,11 @@ public:
 		}
 		else if (route.modelName == "Routes") {
 			Route model = routeRepository.loadModels(route.search, route.offset * cityRepository.pageSize)[number];
-			return DialogForm({
+			return DialogForm(model.id, {
 				DialogFormStep("Route cost", DialogFormFieldType::FT_INT, "route_cost", model.routeCost),
 				DialogFormStep("Select departure city from the list: ", DialogFormFieldType::FT_CITY, "departure_city_id", model.departureCityId),
 				DialogFormStep("Select destination city from the list: ", DialogFormFieldType::FT_CITY, "destination_city_id", model.destinationCityId)
-				});
+			});
 		}
 
 		return DialogForm();
@@ -100,8 +104,8 @@ public:
 		else if (route.modelName == "Routes") {
 			Route routeM = Route(route.dialogForm.modelId);
 			routeM.routeCost = route.dialogForm.steps[0].iValue;
-			routeM.setDepartureCity(City(route.dialogForm.steps[1].iValue));
-			routeM.setDestinationCity(City(route.dialogForm.steps[2].iValue));
+			routeM.setDepartureCity(cityRepository.loadModelById(route.dialogForm.steps[1].iValue));
+			routeM.setDestinationCity(cityRepository.loadModelById(route.dialogForm.steps[2].iValue));
 			return routeRepository.saveModel(routeM);
 		}
 		else if (route.modelName == "Jobs") {

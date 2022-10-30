@@ -14,17 +14,18 @@ int main()
 {
     string startText = "";
     system("chcp 1251>nul");
-    DbConnector dbConnector = DbConnector("PostgreSQL35W", "postgres", "123");
+    DbConnector dbConnector = DbConnector("PostgreSQL35W", "postgres", "1278");
     if (dbConnector.connect() == true) {
         startText += "Connected to DB.\r\n\r\n";
-    } else {
+    }
+    else {
         startText += "Connection to PostgreSQL failed. Working without Database.\r\n\r\n";
     }
 
     RepositoryHub repositoryHub = RepositoryHub(dbConnector);
     repositoryHub.init();
 
-    DialogProcessor dialogProcessor = DialogProcessor(repositoryHub, startText, dbConnector.isConnected());
+    DialogProcessor dialogProcessor = DialogProcessor(&repositoryHub, startText, dbConnector.isConnected());
     while (!dialogProcessor.isFinished()) {
         dialogProcessor.processRoute();
     }

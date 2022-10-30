@@ -36,9 +36,12 @@ vector<City> CityRepository::loadModels(string search, int offset) {
     HSTMT hStmt;
     vector<City> newModels = {};
 
+    if (!dbConnector.isConnected()) {
+        return models;
+    }
+
     retCode = SQLAllocHandle(SQL_HANDLE_STMT, dbConnector.getDBC(), &hStmt);
     if (!dbConnector.checkRetCode(retCode)) {
-        // std::cout << "Error allocating operator handle." << std::endl;
         return models;
     }
 

@@ -47,3 +47,5 @@
 *.txt
 *.idb
 *.sln
+*.vsidx
+*.lock

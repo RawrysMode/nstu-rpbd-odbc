@@ -8,9 +8,9 @@ Route::Route() {
     setDestinationCity(City());
 }
 
-Route::Route(int routeCost) {
-    this->id = 0;
-    this->routeCost = routeCost;
+Route::Route(int id) {
+    this->id = id;
+    this->routeCost = 0;
     setDepartureCity(City());
     setDestinationCity(City());
 }

@@ -12,7 +12,7 @@ class DialogProcessor {
 
 private:
 	vector<DialogRoute> routes = {};
-	RepositoryHub repositoryHub;
+	RepositoryHub* repositoryHub;
 	bool showSearchAndPagination = true;
 
 	void popRoute();
@@ -28,7 +28,7 @@ private:
 	void processRouteModelPick(DialogRoute route, string* option);
 
 public:
-	DialogProcessor(RepositoryHub repositoryHub, string initialText, bool showSearchAndPagination);
+	DialogProcessor(RepositoryHub* repositoryHub, string initialText, bool showSearchAndPagination);
 	bool isFinished();
 	void processRoute();
 };

@@ -36,9 +36,21 @@ vector<Route> RouteRepository::loadModels(string search, int offset) {
     HSTMT hStmt;
     vector<Route> newModels = {};
 
+    if (!dbConnector.isConnected()) {
+        //std::cout << "ASDSADsa " << models.size() << " " << cityRepository->loadModelsCount() << " " << cityRepository->loadModels().size() << std::endl;
+        for (int i = 0; i < models.size(); i++) {
+            Route route = Route(models[i].id);
+            route.routeCost = models[i].routeCost;
+            route.setDepartureCity(cityRepository->loadModelById(models[i].departureCityId));
+            route.setDestinationCity(cityRepository->loadModelById(models[i].destinationCityId));
+            newModels.push_back(route);
+        }
+
+        return newModels;
+    }
+
     retCode = SQLAllocHandle(SQL_HANDLE_STMT, dbConnector.getDBC(), &hStmt);
     if (!dbConnector.checkRetCode(retCode)) {
-        // std::cout << "Error allocating operator handle." << std::endl;
         return models;
     }
 
@@ -67,8 +79,8 @@ vector<Route> RouteRepository::loadModels(string search, int offset) {
         if (dbConnector.checkRetCode(retCode)) {
             Route route = Route(routeId);
             route.routeCost = routeCost;
-            route.setDepartureCity(City((long long)departureCityId).load(dbConnector.getDBC()));
-            route.setDestinationCity(City((long long)destinationCityId).load(dbConnector.getDBC()));
+            route.setDepartureCity(cityRepository->loadModelById(departureCityId));
+            route.setDestinationCity(cityRepository->loadModelById(destinationCityId));
             newModels.push_back(route);
         } else {
             break;

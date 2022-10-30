@@ -51,6 +51,20 @@ public:
 	vector<City> loadModels(string search);
 	vector<City> loadModels(string search, int offset);
 
+	City loadModelById(int id) {
+		if (!this->dbConnector.isConnected()) {
+			for (int i = 0; i < models.size(); i++) {
+				if (models[i].id == id) {
+					return models[i];
+				}
+			}
+
+			return City(id);
+		}
+
+		return City(id).load(this->dbConnector.getDBC());
+	}
+
 	void getModelViewRouteData(DialogRoute route, int* totalModelsCount, int* modelPageSize, string search, vector<string>* modelLabels) {
 		*totalModelsCount = loadModelsCount(search);
 		*modelPageSize = pageSize;

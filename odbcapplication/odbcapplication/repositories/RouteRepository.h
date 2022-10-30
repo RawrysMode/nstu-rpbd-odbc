@@ -1,17 +1,24 @@
+#include "Repository.h"
+#include "../models/Route.h"
+#include "RepositoryHub.h"
+
 #ifndef ROUTE_REPOSITORY_H
 #define ROUTE_REPOSITORY_H
 
-#include "Repository.h"
-#include "../models/Route.h"
 using namespace std;
 
 
 class RouteRepository : public Repository<Route> {
 
+private:
+	CityRepository* cityRepository;
+
 public:
 	RouteRepository() {}
-	RouteRepository(DbConnector dbConnector) {
+
+	RouteRepository(DbConnector dbConnector, CityRepository* cityRepository) {
 		this->dbConnector = dbConnector;
+		this->cityRepository = cityRepository;
 	}
 
 	void checkTableExists() {

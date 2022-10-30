@@ -1,5 +1,5 @@
 #include "DialogProcessor.h"
-#include "../repositories/RepositoryHub.h"
+#include "../repositories/repositoryHub.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -62,7 +62,7 @@ void DialogProcessor::processRouteModelView(DialogRoute route, string* option) {
 	int totalModelsCount = 0;
 	int pageSize = 0;
 	vector<string> modelLabels = {};
-	repositoryHub.getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
+	repositoryHub->getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
 
 	int maxPageNumber = totalModelsCount / pageSize + (totalModelsCount % pageSize != 0);
 	cout << route.modelName << ":" << endl << endl;
@@ -105,7 +105,7 @@ void DialogProcessor::processRouteModelView(DialogRoute route, string* option) {
 
 	if (*option == "a") {
 		DialogRoute addNewModelRoute = DialogRoute(DialogRouteType::MODEL_ADD, route.modelName, route.offset, route.search);
-		addNewModelRoute.dialogForm = repositoryHub.getModelAddDialogForm(route);
+		addNewModelRoute.dialogForm = repositoryHub->getModelAddDialogForm(route);
 		pushRoute(addNewModelRoute);
 	}
 
@@ -123,7 +123,7 @@ void DialogProcessor::processRouteModelSearch(DialogRoute route, string* option)
 	int totalModelsCount = 0;
 	int pageSize = 0;
 	vector<string> modelLabels = {};
-	repositoryHub.getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
+	repositoryHub->getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
 
 	cout << route.modelName << ":" << endl << endl;
 	displayModelLabels(modelLabels, pageSize, route.offset, totalModelsCount, route.search);
@@ -140,7 +140,7 @@ void DialogProcessor::processRouteModelDelete(DialogRoute route, string* option)
 	int totalModelsCount = 0;
 	int pageSize = 0;
 	vector<string> modelLabels = {};
-	repositoryHub.getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
+	repositoryHub->getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
 
 	cout << route.modelName << ":" << endl << endl;
 	displayModelLabels(modelLabels, pageSize, route.offset, totalModelsCount, route.search);
@@ -154,7 +154,7 @@ void DialogProcessor::processRouteModelDelete(DialogRoute route, string* option)
 	long modelNumber = strtol(option->c_str(), &p, 10);
 	if (!*p && modelNumber >= minNumber && modelNumber <= maxNumber) {
 		int idx = modelNumber - pageSize * route.offset - 1;
-		bool isDeleted = repositoryHub.deleteModelByModelNumber(route, idx);
+		bool isDeleted = repositoryHub->deleteModelByModelNumber(route, idx);
 		if (isDeleted) {
 			--totalModelsCount;
 			if (totalModelsCount > 0 && totalModelsCount <= pageSize * route.offset) {
@@ -172,7 +172,7 @@ void DialogProcessor::processRouteModelDelete(DialogRoute route, string* option)
 
 void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 	if (route.dialogForm.isFinished()) {
-		if (repositoryHub.saveModel(route)) {
+		if (repositoryHub->saveModel(route)) {
 			if (route.dialogForm.modelId == 0) {
 				routes[routes.size() - 2].errorMessage = "Model has been added.";
 			} else {
@@ -283,7 +283,7 @@ void DialogProcessor::processRouteModelPick(DialogRoute route, string* option) {
 	int totalModelsCount = 0;
 	int pageSize = 0;
 	vector<string> modelLabels = {};
-	repositoryHub.getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
+	repositoryHub->getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
 
 	cout << route.modelName << ":" << endl << endl;
 	displayModelLabels(modelLabels, pageSize, route.offset, totalModelsCount, route.search);
@@ -316,7 +316,7 @@ void DialogProcessor::processRouteModelPick(DialogRoute route, string* option) {
 	long modelNumber = strtol(option->c_str(), &p, 10);
 	if (!*p && modelNumber >= minNumber && modelNumber <= maxNumber) {
 		int idx = modelNumber - pageSize * route.offset - 1;
-		routes[routes.size() - 2].pickedModelId = repositoryHub.getModelId(route, idx, route.search, route.offset);
+		routes[routes.size() - 2].pickedModelId = repositoryHub->getModelId(route, idx, route.search, route.offset);
 		popRoute();
 	}
 
@@ -346,7 +346,7 @@ void DialogProcessor::processRouteModelEditSelect(DialogRoute route, string* opt
 	int totalModelsCount = 0;
 	int pageSize = 0;
 	vector<string> modelLabels = {};
-	repositoryHub.getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
+	repositoryHub->getModelViewRouteData(route, &totalModelsCount, &pageSize, route.search, &modelLabels);
 
 	cout << route.modelName << ":" << endl << endl;
 	displayModelLabels(modelLabels, pageSize, route.offset, totalModelsCount, route.search);
@@ -361,14 +361,14 @@ void DialogProcessor::processRouteModelEditSelect(DialogRoute route, string* opt
 	if (!*p && modelNumber >= minNumber && modelNumber <= maxNumber) {
 		int idx = modelNumber - pageSize * route.offset - 1;
 		DialogRoute editModelRoute = DialogRoute(DialogRouteType::MODEL_EDIT, route.modelName, route.offset, route.search);
-		editModelRoute.dialogForm = repositoryHub.getModelEditDialogForm(route, idx);
+		editModelRoute.dialogForm = repositoryHub->getModelEditDialogForm(route, idx);
 		pushRoute(editModelRoute);
 	} else {
 		*option = "q";
 	}
 }
 
-DialogProcessor::DialogProcessor(RepositoryHub repositoryHub, string initialText, bool showSearchAndPagination) {
+DialogProcessor::DialogProcessor(RepositoryHub* repositoryHub, string initialText, bool showSearchAndPagination) {
 	this->repositoryHub = repositoryHub;
 	this->showSearchAndPagination = showSearchAndPagination;
 	pushRoute(DialogRoute(DialogRouteType::ENTRY, initialText));
