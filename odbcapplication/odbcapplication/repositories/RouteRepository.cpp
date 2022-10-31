@@ -9,7 +9,7 @@ int RouteRepository::loadModelsCount() {
 int RouteRepository::loadModelsCount(string search) {
     std::string searchQuery = "";
     if (!search.empty()) {
-        searchQuery = "WHERE t2.city_name LIKE '%" + search + "%' OR t3.city_name LIKE '%" + search + "%'";
+        searchQuery = "WHERE t2.city_name LIKE '%" + search + "%' OR t3.city_name LIKE '%" + search + "%' OR CAST(t1.route_cost as TEXT) LIKE '%" + search + "%'";
     }
 
     if (!dbConnector.isConnected()) {
@@ -57,7 +57,7 @@ vector<Route> RouteRepository::loadModels(string search, int offset) {
     SQLCHAR sql[1024];
     string searchString = "";
     if (!search.empty()) {
-        searchString = "WHERE t2.city_name LIKE '%" + search + "%' OR t3.city_name LIKE '%" + search + "%'";
+        searchString = "WHERE t2.city_name LIKE '%" + search + "%' OR t3.city_name LIKE '%" + search + "%' OR CAST(t1.route_cost as TEXT) LIKE '%" + search + "%'";
     }
 
     sprintf_s((char *)sql, 1024, "SELECT t1.id, route_cost, departure_city_id, destination_city_id FROM routes AS t1 LEFT JOIN cities AS t2 ON t1.departure_city_id = t2.id LEFT JOIN cities AS t3 ON t1.destination_city_id = t3.id %s ORDER BY t1.id ASC LIMIT %d OFFSET %d;", searchString.c_str(), pageSize, offset);
