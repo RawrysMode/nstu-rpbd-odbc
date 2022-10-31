@@ -35,11 +35,11 @@ int Client::insert(HDBC hDBC) {
     try {
         checkRetCodeException(SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt));
         checkRetCodeException(SQLPrepareA(hStmt, sql, SQL_NTS), "Prepare SQL");
-        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(companyName.c_str()), 0, (SQLPOINTER)companyName.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(postalAddress.c_str()), 0, (SQLPOINTER)postalAddress.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(phoneNumber.c_str()), 0, (SQLPOINTER)phoneNumber.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(faxNumber.c_str()), 0, (SQLPOINTER)faxNumber.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(email.c_str()), 0, (SQLPOINTER)email.c_str(), 0, &cbValue), "Bind parameter");
+        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(companyName.c_str()), 0, (SQLPOINTER)companyName.c_str(), 0, &cbValue), "Bind parameter 1");
+        checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(postalAddress.c_str()), 0, (SQLPOINTER)postalAddress.c_str(), 0, &cbValue), "Bind parameter 2");
+        checkRetCodeException(SQLBindParameter(hStmt, 3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(phoneNumber.c_str()), 0, (SQLPOINTER)phoneNumber.c_str(), 0, &cbValue), "Bind parameter 3");
+        checkRetCodeException(SQLBindParameter(hStmt, 4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(faxNumber.c_str()), 0, (SQLPOINTER)faxNumber.c_str(), 0, &cbValue), "Bind parameter 4");
+        checkRetCodeException(SQLBindParameter(hStmt, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(email.c_str()), 0, (SQLPOINTER)email.c_str(), 0, &cbValue), "Bind parameter 5");
         checkRetCodeException(SQLExecute(hStmt), "Execute stmt");
         if (SQLFetch(hStmt) == SQL_SUCCESS) {
             SQLGetData(hStmt, 1, SQL_C_ULONG, &id, 0, NULL);
@@ -62,12 +62,12 @@ bool Client::update(HDBC hDBC) {
     try {
         checkRetCodeException(SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt));
         checkRetCodeException(SQLPrepareA(hStmt, sql, SQL_NTS), "Prepare SQL");
-        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(companyName.c_str()), 0, (SQLPOINTER)companyName.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(postalAddress.c_str()), 0, (SQLPOINTER)postalAddress.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(phoneNumber.c_str()), 0, (SQLPOINTER)phoneNumber.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(faxNumber.c_str()), 0, (SQLPOINTER)faxNumber.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(email.c_str()), 0, (SQLPOINTER)email.c_str(), 0, &cbValue), "Bind parameter");
-        checkRetCodeException(SQLBindParameter(hStmt, 6, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 1, 0, (SQLPOINTER)&id, 0, &cbValue), "Bind parameter");
+        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(companyName.c_str()), 0, (SQLPOINTER)companyName.c_str(), 0, &cbValue), "Bind parameter 1");
+        checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(postalAddress.c_str()), 0, (SQLPOINTER)postalAddress.c_str(), 0, &cbValue), "Bind parameter 2");
+        checkRetCodeException(SQLBindParameter(hStmt, 3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(phoneNumber.c_str()), 0, (SQLPOINTER)phoneNumber.c_str(), 0, &cbValue), "Bind parameter 3");
+        checkRetCodeException(SQLBindParameter(hStmt, 4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(faxNumber.c_str()), 0, (SQLPOINTER)faxNumber.c_str(), 0, &cbValue), "Bind parameter 4");
+        checkRetCodeException(SQLBindParameter(hStmt, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(email.c_str()), 0, (SQLPOINTER)email.c_str(), 0, &cbValue), "Bind parameter 5");
+        checkRetCodeException(SQLBindParameter(hStmt, 6, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 1, 0, (SQLPOINTER)&id, 0, &cbValue), "Bind parameter 6");
         checkRetCodeException(SQLExecute(hStmt), "Execute stmt");
         SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     }
@@ -103,11 +103,11 @@ Client Client::load(HDBC hDBC) {
     RETCODE retCode;
     SQLLEN cbValue = SQL_NTS;
     HSTMT hStmt;
-    const int LEN = 40;
+    const int LEN = 25;
     SQLCHAR companyName[LEN], postalAddress[LEN], phoneNumber[LEN], faxNumber[LEN], email[LEN];
-    SQLLEN clientId = 0, clientIdLen = 0, Len = 0;
+    SQLLEN clientId = 0, clientIdLen = 0, len = 0;
 
-    SQLCHAR* sql = (SQLCHAR*)"SELECT id, company_name, postal_address, phone_number, fax_number, email FROM jobs WHERE id = ?;";
+    SQLCHAR* sql = (SQLCHAR*)"SELECT id, company_name, postal_address, phone_number, fax_number, email FROM clients WHERE id = ?;";
 
     try {
         checkRetCodeException(SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt));
@@ -116,17 +116,17 @@ Client Client::load(HDBC hDBC) {
         checkRetCodeException(SQLExecute(hStmt), "Execute stmt");
 
         checkRetCodeException(SQLBindCol(hStmt, 1, SQL_C_USHORT, &clientId, 2, &clientIdLen));
-        checkRetCodeException(SQLBindCol(hStmt, 2, SQL_C_CHAR, &companyName, LEN, &Len));
-        checkRetCodeException(SQLBindCol(hStmt, 3, SQL_C_CHAR, &postalAddress, LEN, &Len));
-        checkRetCodeException(SQLBindCol(hStmt, 4, SQL_C_CHAR, &phoneNumber, LEN, &Len));
-        checkRetCodeException(SQLBindCol(hStmt, 5, SQL_C_CHAR, &faxNumber, LEN, &Len));
-        checkRetCodeException(SQLBindCol(hStmt, 6, SQL_C_CHAR, &email, LEN, &Len));
+        checkRetCodeException(SQLBindCol(hStmt, 2, SQL_C_CHAR, &companyName, LEN, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 3, SQL_C_CHAR, &postalAddress, LEN, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 4, SQL_C_CHAR, &phoneNumber, LEN, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 5, SQL_C_CHAR, &faxNumber, LEN, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 6, SQL_C_CHAR, &email, LEN, &len));
         checkRetCodeException(SQLFetch(hStmt));
         return Client((long long)clientId, string((char*)companyName), string((char*)postalAddress), string((char*)phoneNumber), string((char*)faxNumber), string((char*)email));
         SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     }
     catch (ActiveRecordException& exc) {
-        cout << "Load job failed: " << exc.retCode << " " << exc.message << endl;
+        cout << "Load clients failed: " << exc.retCode << " " << exc.message << endl;
     }
 
     return Client();
