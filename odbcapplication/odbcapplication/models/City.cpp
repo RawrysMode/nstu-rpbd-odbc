@@ -15,11 +15,6 @@ City::City(long long id) {
     this->name = "";
 }
 
-City::City(string name) {
-    this->id = 0;
-    this->name = name;
-}
-
 int City::insert(HDBC hDBC) {
     HSTMT hStmt;
     SQLLEN cbValue = SQL_NTS;

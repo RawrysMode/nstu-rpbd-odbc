@@ -20,7 +20,6 @@ public:
 	City();
 	City(long long id);
 	City(long long id, string name);
-	City(string name);
 
 	bool remove(HDBC hDBC) override;
 	City load(HDBC hDBC);

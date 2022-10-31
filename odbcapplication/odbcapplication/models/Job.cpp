@@ -15,11 +15,6 @@ Job::Job(long long id) {
     this->jobTitle = "";
 }
 
-Job::Job(string jobTitle) {
-    this->id = 0;
-    this->jobTitle = jobTitle;
-}
-
 int Job::insert(HDBC hDBC) {
     HSTMT hStmt;
     SQLLEN cbValue = SQL_NTS;

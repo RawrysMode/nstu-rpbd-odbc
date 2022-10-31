@@ -14,7 +14,7 @@ int main()
 {
     string startText = "";
     system("chcp 1251>nul");
-    DbConnector dbConnector = DbConnector("PostgreSQL35W", "postgres", "1278");
+    DbConnector dbConnector = DbConnector("PostgreSQL35W", "postgres", "123");
     if (dbConnector.connect() == true) {
         startText += "Connected to DB.\r\n\r\n";
     }

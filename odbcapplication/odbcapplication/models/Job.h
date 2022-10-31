@@ -21,7 +21,6 @@ public:
 	Job();
 	Job(long long id);
 	Job(long long id, string name);
-	Job(string name);
 
 	bool remove(HDBC hDBC) override;
 	Job load(HDBC hDBC);
