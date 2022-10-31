@@ -49,3 +49,6 @@
 *.sln
 *.vsidx
 *.lock
+
+
+enc_temp_folder/
