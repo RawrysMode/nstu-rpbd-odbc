@@ -207,7 +207,10 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			if (route.dialogForm.modelId != 0) {
 				cout << " [" << step.sValue << "]: ";
 				string text;
-				getline(cin, text);
+				if (route.dialogForm.currentStepId == 0) {
+					getline(cin, text);
+				}
+
 				getline(cin, text);
 				if (text.empty()) {
 					text = step.sValue;
@@ -228,7 +231,9 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			if (route.dialogForm.modelId != 0) {
 				cout << " [" << step.iValue << "]: ";
 				string text;
-				getline(cin, text);
+				if (route.dialogForm.currentStepId == 0) {
+					getline(cin, text);
+				}
 				getline(cin, text);
 				int iValue = 0;
 
@@ -251,7 +256,9 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			if (route.dialogForm.modelId != 0) {
 				cout << " [" << step.fValue << "]: ";
 				string text;
-				getline(cin, text);
+				if (route.dialogForm.currentStepId == 0) {
+					getline(cin, text);
+				}
 				getline(cin, text);
 				float fValue = 0;
 
