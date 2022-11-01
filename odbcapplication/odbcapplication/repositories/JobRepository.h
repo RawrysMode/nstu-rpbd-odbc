@@ -21,6 +21,20 @@ public:
 	int loadModelsCount();
 	int loadModelsCount(string search);
 
+	Job loadModelById(int id) {
+		if (!this->dbConnector.isConnected()) {
+			for (int i = 0; i < models.size(); i++) {
+				if (models[i].id == id) {
+					return models[i];
+				}
+			}
+
+			return Job(id);
+		}
+
+		return Job(id).load(this->dbConnector.getDBC());
+	}
+
 	bool saveModel(Job job) {
 		if (!dbConnector.isConnected()) {
 			if (job.id == 0) {
