@@ -205,16 +205,21 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 	}
 	else {
 		DialogFormStep step = route.dialogForm.steps[route.dialogForm.currentStepId];
+		string text;
+
+		if (route.dialogForm.currentStepId == 0 || (
+			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_STRING && 
+			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_INT && 
+			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_FLOAT
+			)) {
+			getline(cin, text);
+		}
 
 		if (step.type == DialogFormFieldType::FT_STRING) {
 			cout << step.title;
 			if (route.dialogForm.modelId != 0) {
 				cout << " [" << step.sValue << "]: ";
-				string text;
-				if (route.dialogForm.currentStepId == 0) {
-					getline(cin, text);
-				}
-
+				
 				getline(cin, text);
 				if (text.empty()) {
 					text = step.sValue;
@@ -234,10 +239,7 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			cout << step.title;
 			if (route.dialogForm.modelId != 0) {
 				cout << " [" << step.iValue << "]: ";
-				string text;
-				if (route.dialogForm.currentStepId == 0) {
-					getline(cin, text);
-				}
+
 				getline(cin, text);
 				int iValue = 0;
 
@@ -259,10 +261,7 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			cout << step.title;
 			if (route.dialogForm.modelId != 0) {
 				cout << " [" << step.fValue << "]: ";
-				string text;
-				if (route.dialogForm.currentStepId == 0) {
-					getline(cin, text);
-				}
+
 				getline(cin, text);
 				float fValue = 0;
 

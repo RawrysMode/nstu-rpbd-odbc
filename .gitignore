@@ -53,3 +53,4 @@
 
 enc_temp_folder/
 odbcapplication/odbcapplication/x64/Debug/routerepository.obj.enc
+*.enc
