@@ -37,7 +37,6 @@ vector<Route> RouteRepository::loadModels(string search, int offset) {
     vector<Route> newModels = {};
 
     if (!dbConnector.isConnected()) {
-        //std::cout << "ASDSADsa " << models.size() << " " << cityRepository->loadModelsCount() << " " << cityRepository->loadModels().size() << std::endl;
         for (int i = 0; i < models.size(); i++) {
             Route route = Route(models[i].id);
             route.routeCost = models[i].routeCost;

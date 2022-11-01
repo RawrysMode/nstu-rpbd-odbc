@@ -25,7 +25,7 @@ Employee::Employee(int id) {
 
 void Employee::setJobTitle(Job jobTitle) {
     this->jobTitle = jobTitle;
-    this->jobTitle = jobTitle.id;
+    this->jobId = jobTitle.id;
 }
 
 int Employee::insert(HDBC hDBC) {
@@ -33,16 +33,19 @@ int Employee::insert(HDBC hDBC) {
     SQLLEN cbValue = SQL_NTS;
     SQLCHAR* sql = (SQLCHAR*)"INSERT INTO employees (firstname, patronymic, lastname, date_of_birth, residential_address, job_id, salary) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id;";
 
+    /*checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(name.c_str()), 0, (SQLPOINTER)name.c_str(), 0, &cbValue), "Bind parameter");
+    checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 1, 0, (SQLPOINTER)&id, 0, &cbValue), "Bind parameter");
+    */
     try {
         checkRetCodeException(SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt));
         checkRetCodeException(SQLPrepareA(hStmt, sql, SQL_NTS), "Prepare SQL");
-        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(firstname.c_str()), 0, (SQLPOINTER)&firstname, 0, &cbValue), "Bind 1");
-        checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_INTEGER, strlen(patronymic.c_str()), 0, (SQLPOINTER)&patronymic, 0, &cbValue), "Bind 2");
-        checkRetCodeException(SQLBindParameter(hStmt, 3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_INTEGER, strlen(lastname.c_str()), 0, (SQLPOINTER)&lastname, 0, &cbValue), "Bind 3");
-        checkRetCodeException(SQLBindParameter(hStmt, 4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_DATE, strlen(dateOfBirth.c_str()), 0, (SQLPOINTER)&dateOfBirth, 0, &cbValue), "Bind 4");
-        checkRetCodeException(SQLBindParameter(hStmt, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_INTEGER, strlen(residentialAddress.c_str()), 0, (SQLPOINTER)&residentialAddress, 0, &cbValue), "Bind 5");
-        checkRetCodeException(SQLBindParameter(hStmt, 6, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_INTEGER, 1, 0, (SQLPOINTER)&jobId, 0, &cbValue), "Bind 6");
-        checkRetCodeException(SQLBindParameter(hStmt, 7, SQL_PARAM_INPUT, SQL_C_FLOAT, SQL_NUMERIC, 10, 0, (SQLPOINTER)&salary, 0, &cbValue), "Bind 7");
+        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(firstname.c_str()), 0, (SQLPOINTER)firstname.c_str(), 0, &cbValue), "Bind 1");
+        checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(patronymic.c_str()), 0, (SQLPOINTER)patronymic.c_str(), 0, &cbValue), "Bind 2");
+        checkRetCodeException(SQLBindParameter(hStmt, 3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(lastname.c_str()), 0, (SQLPOINTER)lastname.c_str(), 0, &cbValue), "Bind 3");
+        checkRetCodeException(SQLBindParameter(hStmt, 4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(dateOfBirth.c_str()), 0, (SQLPOINTER)dateOfBirth.c_str(), 0, &cbValue), "Bind 4");
+        checkRetCodeException(SQLBindParameter(hStmt, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(residentialAddress.c_str()), 0, (SQLPOINTER)residentialAddress.c_str(), 0, &cbValue), "Bind 5");
+        checkRetCodeException(SQLBindParameter(hStmt, 6, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 1, 0, (SQLPOINTER)&jobId, 0, &cbValue), "Bind 6");
+        checkRetCodeException(SQLBindParameter(hStmt, 7, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 1, 0, (SQLPOINTER)&salary, 0, &cbValue), "Bind 7");
         checkRetCodeException(SQLExecute(hStmt), "Execute stmt");
         if (SQLFetch(hStmt) == SQL_SUCCESS) {
             SQLGetData(hStmt, 1, SQL_C_ULONG, &id, 0, NULL);
@@ -51,6 +54,10 @@ int Employee::insert(HDBC hDBC) {
         SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     }
     catch (ActiveRecordException& exc) {
+        cout << exc.message << endl;
+        cin.get();
+
+
         return 0;
     }
 
@@ -60,18 +67,18 @@ int Employee::insert(HDBC hDBC) {
 bool Employee::update(HDBC hDBC) {
     HSTMT hStmt;
     SQLLEN cbValue = SQL_NTS;
+    //SQLCHAR* sql = (SQLCHAR*)"UPDATE employees SET firstname = ? WHERE id = ?;";
     SQLCHAR* sql = (SQLCHAR*)"UPDATE employees SET firstname = ?, patronymic = ?, lastname = ?, date_of_birth = ?, residential_address = ?, job_id = ?, salary = ? WHERE id = ?;";
-
     try {
         checkRetCodeException(SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt));
         checkRetCodeException(SQLPrepareA(hStmt, sql, SQL_NTS), "Prepare SQL");
-        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(firstname.c_str()), 0, (SQLPOINTER)&firstname, 0, &cbValue), "Bind 1");
-        checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_INTEGER, strlen(patronymic.c_str()), 0, (SQLPOINTER)&patronymic, 0, &cbValue), "Bind 2");
-        checkRetCodeException(SQLBindParameter(hStmt, 3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_INTEGER, strlen(lastname.c_str()), 0, (SQLPOINTER)&lastname, 0, &cbValue), "Bind 3");
-        checkRetCodeException(SQLBindParameter(hStmt, 4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_DATE, strlen(dateOfBirth.c_str()), 0, (SQLPOINTER)&dateOfBirth, 0, &cbValue), "Bind 4");
-        checkRetCodeException(SQLBindParameter(hStmt, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_INTEGER, strlen(residentialAddress.c_str()), 0, (SQLPOINTER)&residentialAddress, 0, &cbValue), "Bind 5");
-        checkRetCodeException(SQLBindParameter(hStmt, 6, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_INTEGER, 1, 0, (SQLPOINTER)&jobId, 0, &cbValue), "Bind 6");
-        checkRetCodeException(SQLBindParameter(hStmt, 7, SQL_PARAM_INPUT, SQL_C_FLOAT, SQL_NUMERIC, 10, 0, (SQLPOINTER)&salary, 0, &cbValue), "Bind 7");
+        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(firstname.c_str()), 0, (SQLPOINTER)firstname.c_str(), 0, &cbValue), "Bind 1");
+        checkRetCodeException(SQLBindParameter(hStmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(patronymic.c_str()), 0, (SQLPOINTER)patronymic.c_str(), 0, &cbValue), "Bind 2");
+        checkRetCodeException(SQLBindParameter(hStmt, 3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(lastname.c_str()), 0, (SQLPOINTER)lastname.c_str(), 0, &cbValue), "Bind 3");
+        checkRetCodeException(SQLBindParameter(hStmt, 4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(dateOfBirth.c_str()), 0, (SQLPOINTER)dateOfBirth.c_str(), 0, &cbValue), "Bind 4");
+        checkRetCodeException(SQLBindParameter(hStmt, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, strlen(residentialAddress.c_str()), 0, (SQLPOINTER)residentialAddress.c_str(), 0, &cbValue), "Bind 5");
+        checkRetCodeException(SQLBindParameter(hStmt, 6, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 1, 0, (SQLPOINTER)&jobId, 0, &cbValue), "Bind 6");
+        checkRetCodeException(SQLBindParameter(hStmt, 7, SQL_PARAM_INPUT, SQL_C_LONG, SQL_NUMERIC, 1, 0, (SQLPOINTER)&salary, 0, &cbValue), "Bind 7");
         checkRetCodeException(SQLBindParameter(hStmt, 8, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 1, 0, (SQLPOINTER)&id, 0, &cbValue), "Bind parameter");
         checkRetCodeException(SQLExecute(hStmt), "Execute stmt");
         SQLFreeHandle(SQL_HANDLE_STMT, hStmt);

@@ -55,15 +55,15 @@ public:
 		models.push_back(route);
 		return route.save(dbConnector.getDBC());
 	}
-	vector<Route> loadModels();
-	vector<Route> loadModels(int offset);
-	vector<Route> loadModels(string search);
-	vector<Route> loadModels(string search, int offset);
+	vector<Employee> loadModels();
+	vector<Employee> loadModels(int offset);
+	vector<Employee> loadModels(string search);
+	vector<Employee> loadModels(string search, int offset);
 
 	void getModelViewRouteData(DialogRoute route, int* totalModelsCount, int* modelPageSize, string search, vector<string>* modelLabels) {
 		*totalModelsCount = loadModelsCount(search);
 		*modelPageSize = pageSize;
-		vector<Route> models = loadModels(search, route.offset * *modelPageSize);
+		vector<Employee> models = loadModels(search, route.offset * *modelPageSize);
 		modelLabels->clear();
 		for (int i = 0; i < models.size(); i++) {
 			modelLabels->push_back(models[i].toString());
