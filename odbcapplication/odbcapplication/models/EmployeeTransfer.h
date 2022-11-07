@@ -20,8 +20,8 @@ private:
 public:
 	Job oldJobTitle, newJobTitle;
 	Employee employee;
-	string transferReason, orderNumber, orderDate;
-	int employeeId, oldJobId, newJobId;
+	string transferReason, orderDate;
+	int employeeId, oldJobId, newJobId, orderNumber;
 
 	EmployeeTransfer();
 	EmployeeTransfer(int id);
@@ -42,8 +42,8 @@ public:
 
 	std::string toString() {
 		char s[3000];
-		sprintf_s(s, 3000, "Firstname: %s, Patronymic: %s, Lastname: %s, Transfer Reason: %s, Old Job Title: %s, New Job Title: %s, Order Number: %s, Order Date: %s",
-			employee.toStringFPL().c_str(), transferReason.c_str(), oldJobTitle.toString().c_str(), newJobTitle.toString().c_str(), orderNumber.c_str(), orderDate.c_str());
+		sprintf_s(s, 3000, "%s, Transfer Reason: %s, Old Job Title: %s, New Job Title: %s, Order Number: %d, Order Date: %s",
+			employee.toStringFPL().c_str(), transferReason.c_str(), oldJobTitle.toString().c_str(), newJobTitle.toString().c_str(), &orderNumber, orderDate.c_str());
 		return string(s);
 	}
 };
