@@ -25,6 +25,7 @@
     <ClCompile Include="models\BankDetails.cpp" />
     <ClCompile Include="models\City.cpp" />
     <ClCompile Include="models\Client.cpp" />
+    <ClCompile Include="models\Employee.cpp" />
     <ClCompile Include="models\EmployeeTransfer.cpp" />
     <ClCompile Include="models\Job.cpp" />
     <ClCompile Include="models\Order.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="repositories\BankDetailsRepository.cpp" />
     <ClCompile Include="repositories\CityRepository.cpp" />
     <ClCompile Include="repositories\ClientRepository.cpp" />
+    <ClCompile Include="repositories\EmployeeRepository.cpp" />
     <ClCompile Include="repositories\JobRepository.cpp" />
     <ClCompile Include="repositories\Repository.cpp" />
     <ClCompile Include="repositories\RouteRepository.cpp" />
@@ -50,6 +52,7 @@
     <ClInclude Include="models\BankDetails.h" />
     <ClInclude Include="models\City.h" />
     <ClInclude Include="models\Client.h" />
+    <ClInclude Include="models\Employee.h" />
     <ClInclude Include="models\EmployeeTransfer.h" />
     <ClInclude Include="models\Job.h" />
     <ClInclude Include="models\Order.h" />
@@ -57,6 +60,7 @@
     <ClInclude Include="repositories\BankDetailsRepository.h" />
     <ClInclude Include="repositories\CityRepository.h" />
     <ClInclude Include="repositories\ClientRepository.h" />
+    <ClInclude Include="repositories\EmployeeRepository.h" />
     <ClInclude Include="repositories\JobRepository.h" />
     <ClInclude Include="repositories\Repository.h" />
     <ClInclude Include="repositories\RepositoryHub.h" />
