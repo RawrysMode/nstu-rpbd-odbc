@@ -1,5 +1,5 @@
-#ifndef EMPLOYEE_H
-#define EMPLOYEE_H
+#ifndef BANK_DETAILS_H
+#define BANK_DETAILS_H
 
 #include <windows.h>
 #include <sql.h>
