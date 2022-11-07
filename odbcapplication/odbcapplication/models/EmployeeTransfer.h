@@ -43,7 +43,7 @@ public:
 	std::string toString() {
 		char s[3000];
 		sprintf_s(s, 3000, "%s, Transfer Reason: %s, Old Job Title: %s, New Job Title: %s, Order Number: %d, Order Date: %s",
-			employee.toStringFPL().c_str(), transferReason.c_str(), oldJobTitle.toString().c_str(), newJobTitle.toString().c_str(), &orderNumber, orderDate.c_str());
+			employee.toStringFPL().c_str(), transferReason.c_str(), oldJobTitle.toString().c_str(), newJobTitle.toString().c_str(), orderNumber, orderDate.c_str());
 		return string(s);
 	}
 };
