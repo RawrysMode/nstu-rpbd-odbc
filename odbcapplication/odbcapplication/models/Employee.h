@@ -50,7 +50,7 @@ public:
 	
 	std::string toStringFPL() {
 		char s[6000];
-		sprintf_s(s, 6000, "First Name: %s, Patronymic: %s, Last Name: %s, Date Of Birth: %s, Residential Address: %s, Job: %s, Salary: %d",
+		sprintf_s(s, 6000, "First Name: %s, Patronymic: %s, Last Name: %s",
 			firstname.c_str(), patronymic.c_str(), lastname.c_str());
 		return string(s);
 	}
