@@ -7,7 +7,6 @@
 
 using namespace std;
 
-
 class BankDetailsRepository : public Repository<BankDetails> {
 
 private:
