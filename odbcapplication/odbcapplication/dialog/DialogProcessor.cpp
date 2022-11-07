@@ -214,7 +214,10 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 		if (route.dialogForm.currentStepId == 0 || (
 			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_STRING && 
 			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_INT && 
-			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_FLOAT
+			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_FLOAT &&
+			route.dialogForm.steps[route.dialogForm.currentStepId].type != DialogFormFieldType::FT_STRING &&
+			route.dialogForm.steps[route.dialogForm.currentStepId].type != DialogFormFieldType::FT_INT &&
+			route.dialogForm.steps[route.dialogForm.currentStepId].type != DialogFormFieldType::FT_FLOAT
 			)) {
 			getline(cin, text);
 		}

@@ -39,6 +39,12 @@ public:
 		sprintf_s(s, 512, "Company Name: %s, Postal Address: %s, Phone Number: %s, Fax Number: %s, Email: %s", companyName.c_str(), postalAddress.c_str(), phoneNumber.c_str(), faxNumber.c_str(), email.c_str());
 		return string(s);
 	}
+
+	std::string toStringCN() {
+		char s[200];
+		sprintf_s(s, 200, "Company Name: %s", companyName.c_str());
+		return string(s);
+	}
 };
 
 #endif

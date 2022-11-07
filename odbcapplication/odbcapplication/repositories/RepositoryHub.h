@@ -6,6 +6,7 @@
 #include "JobRepository.h"
 #include "ClientRepository.h"
 #include "EmployeeRepository.h"
+#include "BankDetailsRepository.h"
 #include "RepositoryNotFound.h"
 #include "../dialog/DialogForm.h"
 
@@ -20,12 +21,15 @@ public:
 	JobRepository jobRepository;
 	ClientRepository clientRepository;
 	EmployeeRepository employeeRepository;
+	BankDetailsRepository bankDetailsRepository;
+
 	RepositoryHub() {
 		cityRepository = CityRepository();
 		routeRepository = RouteRepository();
 		jobRepository = JobRepository();
 		clientRepository = ClientRepository();
 		employeeRepository = EmployeeRepository();
+		bankDetailsRepository = BankDetailsRepository();
 	}
 
 	RepositoryHub(DbConnector dbConnector) {
@@ -34,6 +38,7 @@ public:
 		jobRepository = JobRepository(dbConnector);
 		clientRepository = ClientRepository(dbConnector);
 		employeeRepository = EmployeeRepository(dbConnector, &jobRepository);
+		bankDetailsRepository = BankDetailsRepository(dbConnector, &clientRepository, &cityRepository);
 	}
 
 	void init() {
@@ -42,6 +47,7 @@ public:
 		jobRepository.checkTableExists();
 		clientRepository.checkTableExists();
 		employeeRepository.checkTableExists();
+		bankDetailsRepository.checkTableExists();
 	}
 
 	void getModelViewRouteData(DialogRoute route, int* totalModelsCount, int* pageSize, string search, vector<string>* modelLabels) {
@@ -60,6 +66,9 @@ public:
 		else if (route.modelName == "Employees") {
 			employeeRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
 		}
+		else if (route.modelName == "Bank Details") {
+			bankDetailsRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
+		}
 	}
 
 	int getModelId(DialogRoute route, int number, string search, int offset) {
@@ -77,6 +86,9 @@ public:
 		}
 		else if (route.modelName == "Employees") {
 			return employeeRepository.loadModels(search, offset)[number].id;
+		}
+		else if (route.modelName == "Bank Details") {
+			return bankDetailsRepository.loadModels(search, offset)[number].id;
 		}
 	}
 
@@ -110,8 +122,18 @@ public:
 				DialogFormStep("Lastname", DialogFormFieldType::FT_STRING, "lastname", ""),
 				DialogFormStep("Date Of Birth", DialogFormFieldType::FT_STRING, "date_of_birth", ""),
 				DialogFormStep("Residential Address", DialogFormFieldType::FT_STRING, "residential_address", ""),
-				DialogFormStep("Select job from the list", DialogFormFieldType::FT_JOB, "job_id", ""),
+				DialogFormStep("Select job from the list: ", DialogFormFieldType::FT_JOB, "job_id", ""),
+
 				DialogFormStep("Salary", DialogFormFieldType::FT_INT, "salary", "")
+				});
+		}
+		else if (route.modelName == "Bank Details") {
+			return DialogForm({
+				DialogFormStep("Select client from the list: ", DialogFormFieldType::FT_CLIENT, "client_id", ""),
+				DialogFormStep("Bank Name", DialogFormFieldType::FT_STRING, "bank_name", ""),
+				DialogFormStep("Select city from the list: ", DialogFormFieldType::FT_CITY, "city_id", ""),
+				DialogFormStep("Taxpayer Identification Number", DialogFormFieldType::FT_STRING, "tin", ""),
+				DialogFormStep("Bank Account", DialogFormFieldType::FT_STRING, "bank_account", "")
 				});
 		}
 
@@ -157,6 +179,16 @@ public:
 				DialogFormStep("Salary", DialogFormFieldType::FT_INT, "salary", model.salary),
 				});
 		}
+		else if (route.modelName == "Bank Details") {
+			BankDetails model = bankDetailsRepository.loadModels(route.search, route.offset * cityRepository.pageSize)[number];
+			return DialogForm(model.id, {
+				DialogFormStep("Select client from the list: ", DialogFormFieldType::FT_CLIENT, "client_id", model.companyId),
+				DialogFormStep("Bank Name", DialogFormFieldType::FT_STRING, "bank_name", model.bankName),
+				DialogFormStep("Select city from the list: ", DialogFormFieldType::FT_CITY, "city_id", model.cityId),
+				DialogFormStep("Taxpayer Identification Number", DialogFormFieldType::FT_STRING, "tin", model.taxpayerIN),
+				DialogFormStep("Bank Account", DialogFormFieldType::FT_STRING, "bank_account", model.bankAccount)
+				});
+		}
 
 		return DialogForm();
 	}
@@ -197,6 +229,16 @@ public:
 			employee.salary = route.dialogForm.steps[6].iValue;
 			return employeeRepository.saveModel(employee);
 		}
+		else if (route.modelName == "Bank Details") {
+			BankDetails bankDetails = BankDetails(route.dialogForm.modelId);
+			bankDetails.setCompanyName(clientRepository.loadModelById(route.dialogForm.steps[0].iValue));
+			bankDetails.bankName = route.dialogForm.steps[1].sValue;
+			bankDetails.setCityName(cityRepository.loadModelById(route.dialogForm.steps[2].iValue));
+			bankDetails.taxpayerIN = route.dialogForm.steps[3].sValue;
+			bankDetails.bankAccount = route.dialogForm.steps[4].sValue;
+
+			return bankDetailsRepository.saveModel(bankDetails);
+		}
 
 		return false;
 	}
@@ -222,10 +264,13 @@ public:
 			Employee model = employeeRepository.loadModels(route.search, route.offset * employeeRepository.pageSize)[number];
 			employeeRepository.deleteModel(model);
 		}
+		else if (route.modelName == "Bank Details") {
+			BankDetails model = bankDetailsRepository.loadModels(route.search, route.offset * employeeRepository.pageSize)[number];
+			bankDetailsRepository.deleteModel(model);
+		}
 
 		return true;
 	}
-
 };
 
 #endif

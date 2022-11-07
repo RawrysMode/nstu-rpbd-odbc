@@ -16,7 +16,7 @@ int BankDetailsRepository::loadModelsCount(string search) {
         return models.size();
     }
 
-    return dbConnector.getRowsCount("bank_details", searchQuery, "LEFT JOIN clients AS t2 on t1.client_id = t2.id LEFT JOIN cities AS t2 on t1.city_id = t2.id");
+    return dbConnector.getRowsCount("bank_details", searchQuery, "LEFT JOIN clients AS t2 on t1.client_id = t2.id LEFT JOIN cities AS t3 on t1.city_id = t3.id");
 }
 
 vector<BankDetails> BankDetailsRepository::loadModels(int offset) {
@@ -40,7 +40,7 @@ vector<BankDetails> BankDetailsRepository::loadModels(string search, int offset)
         for (int i = 0; i < models.size(); i++) {
             BankDetails bankDetails = BankDetails(models[i].id);
             bankDetails.setCompanyName(clientRepository->loadModelById(models[i].companyId));
-            bankDetails.bankAccount = models[i].bankAccount;
+            bankDetails.bankName = models[i].bankName;
             bankDetails.setCityName(cityRepository->loadModelById(models[i].cityId));
             bankDetails.taxpayerIN = models[i].taxpayerIN;
             bankDetails.bankAccount = models[i].bankAccount;
@@ -56,13 +56,13 @@ vector<BankDetails> BankDetailsRepository::loadModels(string search, int offset)
         return models;
     }
 
-    SQLCHAR sql[2048];
+    SQLCHAR sql[4000];
     string searchString = "";
     if (!search.empty()) {
         searchString = "WHERE t2.company_name LIKE '%" + search + "%' OR bank_name LIKE '%" + search + "%' OR t3.city_name LIKE '%" + search + "%' OR tin LIKE '%" + search + "%' OR bank_account LIKE '%" + search + "%'";
     }
 
-    sprintf_s((char*)sql, 2048, "select t1.id, client_id, bank_name, city_id, tin, bank_account from bank_details AS t1 LEFT JOIN clients AS t2 on t1.client_id = t2.id LEFT JOIN cities AS t2 on t1.city_id = t2.id %s ORDER BY t1.id ASC LIMIT %d OFFSET %d", searchString.c_str(), pageSize, offset);
+    sprintf_s((char*)sql, 4000, "select t1.id, client_id, bank_name, city_id, tin, bank_account from bank_details AS t1 LEFT JOIN clients AS t2 on t1.client_id = t2.id LEFT JOIN cities AS t3 on t1.city_id = t3.id %s ORDER BY t1.id ASC LIMIT %d OFFSET %d", searchString.c_str(), pageSize, offset);
 
     retCode = SQLExecDirectA(hStmt, sql, SQL_NTS);
     if (!dbConnector.checkRetCode(retCode)) {
@@ -86,7 +86,7 @@ vector<BankDetails> BankDetailsRepository::loadModels(string search, int offset)
         if (dbConnector.checkRetCode(retCode)) {
             BankDetails bankDetails = BankDetails(bankDetailsId);
             bankDetails.setCompanyName(clientRepository->loadModelById(clientId));
-            bankDetails.bankAccount = string((char*)bankAccount);
+            bankDetails.bankName = string((char*)bankName);
             bankDetails.setCityName(cityRepository->loadModelById(cityId));
             bankDetails.taxpayerIN = string((char*)taxpayerIN);
             bankDetails.bankAccount = string((char*)bankAccount);
