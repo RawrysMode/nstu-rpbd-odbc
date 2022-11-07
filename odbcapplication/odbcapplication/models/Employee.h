@@ -26,9 +26,11 @@ public:
 
 	Employee();
 	Employee(int id);
+	Employee(int id, string firstname, string patronymic, string lastname, string dateOfBirth, string residentialAddress, int jobId, int salary);
 
 	bool remove(HDBC hDBC) override;
 	void setJobTitle(Job jobTitle);
+	Employee load(HDBC hDBC);
 
 	friend bool operator==(const Employee& lhs, const Employee& rhs) {
 		return lhs.id == rhs.id &&
