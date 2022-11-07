@@ -47,6 +47,13 @@ public:
 			firstname.c_str(), patronymic.c_str(), lastname.c_str(), dateOfBirth.c_str(), residentialAddress.c_str(), jobTitle.toString().c_str(), salary);
 		return string(s);
 	}
+	
+	std::string toStringFPL() {
+		char s[6000];
+		sprintf_s(s, 6000, "First Name: %s, Patronymic: %s, Last Name: %s, Date Of Birth: %s, Residential Address: %s, Job: %s, Salary: %d",
+			firstname.c_str(), patronymic.c_str(), lastname.c_str());
+		return string(s);
+	}
 };
 
 #endif
