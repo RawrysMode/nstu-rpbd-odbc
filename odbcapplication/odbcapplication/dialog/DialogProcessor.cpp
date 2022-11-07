@@ -311,7 +311,7 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 				routes[routes.size() - 1].pickedModelId = 0;
 			}
 			else {
-				pushRoute(DialogRoute(DialogRouteType::MODEL_PICK, "Bank Details", 0, ""));
+				pushRoute(DialogRoute(DialogRouteType::MODEL_PICK, "Clients", 0, ""));
 				routes[routes.size() - 1].errorMessage = step.title;
 				return;
 			}
