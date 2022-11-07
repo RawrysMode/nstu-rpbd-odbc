@@ -129,7 +129,7 @@ public:
 		}
 		else if (route.modelName == "Clients") {
 			Client model = clientRepository.loadModels(route.search, route.offset * jobRepository.pageSize)[number];
-			return DialogForm(model.id, { 
+			return DialogForm(model.id, {
 				DialogFormStep("Company Name", DialogFormFieldType::FT_STRING, "company_name", model.companyName),
 				DialogFormStep("Postal Address", DialogFormFieldType::FT_STRING, "postal_address", model.postalAddress),
 				DialogFormStep("Phone Number", DialogFormFieldType::FT_STRING, "phone_number", model.phoneNumber),
@@ -177,11 +177,11 @@ public:
 		}
 		else if (route.modelName == "Clients") {
 			return clientRepository.saveModel(Client(
-				route.dialogForm.modelId, 
-				route.dialogForm.steps[0].sValue, 
-				route.dialogForm.steps[1].sValue, 
-				route.dialogForm.steps[2].sValue, 
-				route.dialogForm.steps[3].sValue, 
+				route.dialogForm.modelId,
+				route.dialogForm.steps[0].sValue,
+				route.dialogForm.steps[1].sValue,
+				route.dialogForm.steps[2].sValue,
+				route.dialogForm.steps[3].sValue,
 				route.dialogForm.steps[4].sValue
 			));
 		}
