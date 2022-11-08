@@ -26,9 +26,11 @@ public:
 
 	Employee();
 	Employee(int id);
+	Employee(int id, string firstname, string patronymic, string lastname, string dateOfBirth, string residentialAddress, int jobId, int salary);
 
 	bool remove(HDBC hDBC) override;
 	void setJobTitle(Job jobTitle);
+	Employee load(HDBC hDBC);
 
 	friend bool operator==(const Employee& lhs, const Employee& rhs) {
 		return lhs.id == rhs.id &&
@@ -45,6 +47,13 @@ public:
 		char s[6000];
 		sprintf_s(s, 6000, "First Name: %s, Patronymic: %s, Last Name: %s, Date Of Birth: %s, Residential Address: %s, Job: %s, Salary: %d",
 			firstname.c_str(), patronymic.c_str(), lastname.c_str(), dateOfBirth.c_str(), residentialAddress.c_str(), jobTitle.toString().c_str(), salary);
+		return string(s);
+	}
+	
+	std::string toStringFPL() {
+		char s[6000];
+		sprintf_s(s, 6000, "Firstname: %s, Patronymic: %s, Lastname: %s",
+			firstname.c_str(), patronymic.c_str(), lastname.c_str());
 		return string(s);
 	}
 };

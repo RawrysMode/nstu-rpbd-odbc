@@ -40,7 +40,7 @@ public:
 
 	std::string toString() {
 		char s[3000];
-		sprintf_s(s, 3000, "Company Name: %s, Bank Name: %s, City Name: %s, Taxpayer Identification Number: %s, Bank Account: %s",
+		sprintf_s(s, 3000, "%s, Bank Name: %s, City Name: %s, Taxpayer Identification Number: %s, Bank Account: %s",
 			companyName.toStringCN().c_str(), bankName.c_str(), cityName.toString().c_str(), taxpayerIN.c_str(), bankAccount.c_str());
 		return string(s);
 	}

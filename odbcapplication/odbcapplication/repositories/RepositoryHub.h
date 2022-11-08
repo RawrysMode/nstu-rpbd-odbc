@@ -7,6 +7,7 @@
 #include "ClientRepository.h"
 #include "EmployeeRepository.h"
 #include "BankDetailsRepository.h"
+#include "EmployeeTransferRepository.h"
 #include "RepositoryNotFound.h"
 #include "../dialog/DialogForm.h"
 
@@ -22,6 +23,7 @@ public:
 	ClientRepository clientRepository;
 	EmployeeRepository employeeRepository;
 	BankDetailsRepository bankDetailsRepository;
+	EmployeeTransferRepository employeeTransferRepository;
 
 	RepositoryHub() {
 		cityRepository = CityRepository();
@@ -30,6 +32,7 @@ public:
 		clientRepository = ClientRepository();
 		employeeRepository = EmployeeRepository();
 		bankDetailsRepository = BankDetailsRepository();
+		employeeTransferRepository = EmployeeTransferRepository();
 	}
 
 	RepositoryHub(DbConnector dbConnector) {
@@ -39,6 +42,7 @@ public:
 		clientRepository = ClientRepository(dbConnector);
 		employeeRepository = EmployeeRepository(dbConnector, &jobRepository);
 		bankDetailsRepository = BankDetailsRepository(dbConnector, &clientRepository, &cityRepository);
+		employeeTransferRepository = EmployeeTransferRepository(dbConnector, &employeeRepository, &jobRepository);
 	}
 
 	void init() {
@@ -48,6 +52,7 @@ public:
 		clientRepository.checkTableExists();
 		employeeRepository.checkTableExists();
 		bankDetailsRepository.checkTableExists();
+		employeeTransferRepository.checkTableExists();
 	}
 
 	void getModelViewRouteData(DialogRoute route, int* totalModelsCount, int* pageSize, string search, vector<string>* modelLabels) {
@@ -69,6 +74,9 @@ public:
 		else if (route.modelName == "Bank Details") {
 			bankDetailsRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
 		}
+		else if (route.modelName == "Employee Transfers") {
+			employeeTransferRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
+		}
 	}
 
 	int getModelId(DialogRoute route, int number, string search, int offset) {
@@ -89,6 +97,9 @@ public:
 		}
 		else if (route.modelName == "Bank Details") {
 			return bankDetailsRepository.loadModels(search, offset)[number].id;
+		}
+		else if (route.modelName == "Employee Transfers") {
+			return employeeTransferRepository.loadModels(search, offset)[number].id;
 		}
 	}
 
@@ -123,7 +134,6 @@ public:
 				DialogFormStep("Date Of Birth", DialogFormFieldType::FT_STRING, "date_of_birth", ""),
 				DialogFormStep("Residential Address", DialogFormFieldType::FT_STRING, "residential_address", ""),
 				DialogFormStep("Select job from the list: ", DialogFormFieldType::FT_JOB, "job_id", ""),
-
 				DialogFormStep("Salary", DialogFormFieldType::FT_INT, "salary", "")
 				});
 		}
@@ -134,6 +144,16 @@ public:
 				DialogFormStep("Select city from the list: ", DialogFormFieldType::FT_CITY, "city_id", ""),
 				DialogFormStep("Taxpayer Identification Number", DialogFormFieldType::FT_STRING, "tin", ""),
 				DialogFormStep("Bank Account", DialogFormFieldType::FT_STRING, "bank_account", "")
+				});
+		}
+		else if (route.modelName == "Employee Transfers") {
+			return DialogForm({
+				DialogFormStep("Select employee from the list: ", DialogFormFieldType::FT_EMPLOYEE, "employee_id", ""),
+				DialogFormStep("Transfer Reason", DialogFormFieldType::FT_STRING, "transfer_reason", ""),
+				DialogFormStep("Select old job title from the list: ", DialogFormFieldType::FT_JOB, "old_job_id", ""),
+				DialogFormStep("Select new job title from the list: ", DialogFormFieldType::FT_JOB, "new_job_id", ""),
+				DialogFormStep("Order Number", DialogFormFieldType::FT_INT, "order_number", ""),
+				DialogFormStep("Order Date", DialogFormFieldType::FT_STRING, "order_date", "")
 				});
 		}
 
@@ -150,7 +170,7 @@ public:
 			return DialogForm(model.id, { DialogFormStep("Job Title", DialogFormFieldType::FT_STRING, "job_title", model.jobTitle) });
 		}
 		else if (route.modelName == "Clients") {
-			Client model = clientRepository.loadModels(route.search, route.offset * jobRepository.pageSize)[number];
+			Client model = clientRepository.loadModels(route.search, route.offset * clientRepository.pageSize)[number];
 			return DialogForm(model.id, {
 				DialogFormStep("Company Name", DialogFormFieldType::FT_STRING, "company_name", model.companyName),
 				DialogFormStep("Postal Address", DialogFormFieldType::FT_STRING, "postal_address", model.postalAddress),
@@ -160,7 +180,7 @@ public:
 				});
 		}
 		else if (route.modelName == "Routes") {
-			Route model = routeRepository.loadModels(route.search, route.offset * cityRepository.pageSize)[number];
+			Route model = routeRepository.loadModels(route.search, route.offset * routeRepository.pageSize)[number];
 			return DialogForm(model.id, {
 				DialogFormStep("Route cost", DialogFormFieldType::FT_INT, "route_cost", model.routeCost),
 				DialogFormStep("Select departure city from the list: ", DialogFormFieldType::FT_CITY, "departure_city_id", model.departureCityId),
@@ -168,7 +188,7 @@ public:
 				});
 		}
 		else if (route.modelName == "Employees") {
-			Employee model = employeeRepository.loadModels(route.search, route.offset * cityRepository.pageSize)[number];
+			Employee model = employeeRepository.loadModels(route.search, route.offset * employeeRepository.pageSize)[number];
 			return DialogForm(model.id, {
 				DialogFormStep("Firstname", DialogFormFieldType::FT_STRING, "firstname", model.firstname),
 				DialogFormStep("Patronymic", DialogFormFieldType::FT_STRING, "patronymic", model.patronymic),
@@ -180,13 +200,24 @@ public:
 				});
 		}
 		else if (route.modelName == "Bank Details") {
-			BankDetails model = bankDetailsRepository.loadModels(route.search, route.offset * cityRepository.pageSize)[number];
+			BankDetails model = bankDetailsRepository.loadModels(route.search, route.offset * bankDetailsRepository.pageSize)[number];
 			return DialogForm(model.id, {
 				DialogFormStep("Select client from the list: ", DialogFormFieldType::FT_CLIENT, "client_id", model.companyId),
 				DialogFormStep("Bank Name", DialogFormFieldType::FT_STRING, "bank_name", model.bankName),
 				DialogFormStep("Select city from the list: ", DialogFormFieldType::FT_CITY, "city_id", model.cityId),
 				DialogFormStep("Taxpayer Identification Number", DialogFormFieldType::FT_STRING, "tin", model.taxpayerIN),
 				DialogFormStep("Bank Account", DialogFormFieldType::FT_STRING, "bank_account", model.bankAccount)
+				});
+		}
+		else if (route.modelName == "Employee Transfers") {
+			EmployeeTransfer model = employeeTransferRepository.loadModels(route.search, route.offset * employeeTransferRepository.pageSize)[number];
+			return DialogForm(model.id, {
+				DialogFormStep("Select employee from the list: ", DialogFormFieldType::FT_EMPLOYEE, "employee_id", model.employeeId),
+				DialogFormStep("Transfer Reason", DialogFormFieldType::FT_STRING, "transfer_reason", model.transferReason),
+				DialogFormStep("Select old job title from the list: ", DialogFormFieldType::FT_JOB, "old_job_id", model.oldJobId),
+				DialogFormStep("Select new job title from the list: ", DialogFormFieldType::FT_JOB, "new_job_id", model.newJobId),
+				DialogFormStep("Order Number", DialogFormFieldType::FT_INT, "order_number", model.orderNumber),
+				DialogFormStep("Order Date", DialogFormFieldType::FT_STRING, "order_date", model.orderDate)
 				});
 		}
 
@@ -236,8 +267,17 @@ public:
 			bankDetails.setCityName(cityRepository.loadModelById(route.dialogForm.steps[2].iValue));
 			bankDetails.taxpayerIN = route.dialogForm.steps[3].sValue;
 			bankDetails.bankAccount = route.dialogForm.steps[4].sValue;
-
 			return bankDetailsRepository.saveModel(bankDetails);
+		}
+		else if (route.modelName == "Employee Transfers") {
+			EmployeeTransfer employeeTransfer = EmployeeTransfer(route.dialogForm.modelId);
+			employeeTransfer.setEmployee(employeeRepository.loadModelById(route.dialogForm.steps[0].iValue));
+			employeeTransfer.transferReason = route.dialogForm.steps[1].sValue;
+			employeeTransfer.setOldJob(jobRepository.loadModelById(route.dialogForm.steps[2].iValue));
+			employeeTransfer.setNewJob(jobRepository.loadModelById(route.dialogForm.steps[3].iValue));
+			employeeTransfer.orderNumber = route.dialogForm.steps[4].iValue;
+			employeeTransfer.orderDate = route.dialogForm.steps[5].sValue;
+			return employeeTransferRepository.saveModel(employeeTransfer);
 		}
 
 		return false;
@@ -265,8 +305,12 @@ public:
 			employeeRepository.deleteModel(model);
 		}
 		else if (route.modelName == "Bank Details") {
-			BankDetails model = bankDetailsRepository.loadModels(route.search, route.offset * employeeRepository.pageSize)[number];
+			BankDetails model = bankDetailsRepository.loadModels(route.search, route.offset * bankDetailsRepository.pageSize)[number];
 			bankDetailsRepository.deleteModel(model);
+		}
+		else if (route.modelName == "Employee Transfers") {
+			EmployeeTransfer model = employeeTransferRepository.loadModels(route.search, route.offset * employeeTransferRepository.pageSize)[number];
+			employeeTransferRepository.deleteModel(model);
 		}
 
 		return true;
