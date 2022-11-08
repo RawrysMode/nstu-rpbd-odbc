@@ -25,14 +25,14 @@ void EmployeeTransfer::setEmployee(Employee employee) {
     this->employeeId = employee.id;
 }
 
-void EmployeeTransfer::setOldJob(Job oldJobtitle) {
+void EmployeeTransfer::setOldJob(Job oldJobTitle) {
     this->oldJobTitle = oldJobTitle;
     this->oldJobId = oldJobTitle.id;
 }
 
 void EmployeeTransfer::setNewJob(Job newJobTitle) {
     this->newJobTitle = newJobTitle;
-    this->newJobTitle = newJobTitle.id;
+    this->newJobId = newJobTitle.id;
 }
 
 int EmployeeTransfer::insert(HDBC hDBC) {

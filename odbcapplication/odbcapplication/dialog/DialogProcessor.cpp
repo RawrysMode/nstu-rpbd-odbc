@@ -46,6 +46,7 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	cout << "4 : Clients" << endl;
 	cout << "5 : Employees" << endl;
 	cout << "6 : Bank Details" << endl;
+	cout << "7 : Employee Transfers" << endl;
 	cout << "q : Exit" << endl << endl;
 
 	cout << "> ";
@@ -68,6 +69,9 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	}
 	else if (*option == "6") {
 		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Bank Details"));
+	}
+	else if (*option == "7") {
+		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Employee Transfers"));
 	}
 }
 
@@ -315,6 +319,17 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			}
 			else {
 				pushRoute(DialogRoute(DialogRouteType::MODEL_PICK, "Clients", 0, ""));
+				routes[routes.size() - 1].errorMessage = step.title;
+				return;
+			}
+		}
+		else if (step.type == DialogFormFieldType::FT_EMPLOYEE) {
+			if (route.pickedModelId != 0) {
+				routes[routes.size() - 1].dialogForm.steps[route.dialogForm.currentStepId].iValue = route.pickedModelId;
+				routes[routes.size() - 1].pickedModelId = 0;
+			}
+			else {
+				pushRoute(DialogRoute(DialogRouteType::MODEL_PICK, "Employees", 0, ""));
 				routes[routes.size() - 1].errorMessage = step.title;
 				return;
 			}
