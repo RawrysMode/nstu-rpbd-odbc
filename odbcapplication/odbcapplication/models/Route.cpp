@@ -15,6 +15,13 @@ Route::Route(int id) {
     setDestinationCity(City());
 }
 
+Route::Route(int id, int departureCityId, int destinationCityId, int routeCost) {
+    this->id = id;
+    this->departureCityId = departureCityId;
+    this->destinationCityId = destinationCityId;
+    this->routeCost = routeCost;
+}
+
 void Route::setDepartureCity(City departureCity) {
     this->departureCity = departureCity;
     this->departureCityId = departureCity.id;
@@ -91,4 +98,33 @@ bool Route::remove(HDBC hDBC) {
     }
 
     return true;
+}
+
+Route Route::load(HDBC hDBC) {
+    RETCODE retCode;
+    SQLLEN cbValue = SQL_NTS;
+    HSTMT hStmt;
+    SQLLEN routeId = 0, departureCityId = 0, destinationCityId = 0, routeCost = 0, len = 0;
+
+    SQLCHAR* sql = (SQLCHAR*)"select id, departure_city_id, destination_sity_id, route_cost from routes WHERE id = ?;";
+
+    try {
+        checkRetCodeException(SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt));
+        checkRetCodeException(SQLPrepareA(hStmt, sql, SQL_NTS), "Prepare SQL");
+        checkRetCodeException(SQLBindParameter(hStmt, 1, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 1, 0, (SQLPOINTER)&id, 0, &cbValue), "Bind parameter");
+        checkRetCodeException(SQLExecute(hStmt), "Execute stmt");
+
+        checkRetCodeException(SQLBindCol(hStmt, 1, SQL_C_LONG, &routeId, 1, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 2, SQL_C_LONG, &departureCityId, 1, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 3, SQL_C_LONG, &destinationCityId, 1, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 4, SQL_C_LONG, &routeCost, 1, &len));
+        checkRetCodeException(SQLFetch(hStmt));
+        return Route((int)routeId, (int)departureCityId, (int)destinationCityId, (int)routeCost);
+        SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+    }
+    catch (ActiveRecordException& exc) {
+        cout << "Load clients failed: " << exc.retCode << " " << exc.message << endl;
+    }
+
+    return Route();
 }

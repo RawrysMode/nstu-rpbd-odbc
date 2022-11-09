@@ -25,10 +25,13 @@ public:
 
 	Route();
 	Route(int id);
+	Route(int id, int departureCityId, int destinationCityId, int routeCost);
+
 
 	bool remove(HDBC hDBC) override;
 	void setDepartureCity(City departureCity);
 	void setDestinationCity(City destinationCity);
+	Route load(HDBC hDBC);
 
 	friend bool operator==(const Route& lhs, const Route& rhs) {
 		return lhs.id == rhs.id && lhs.departureCityId == rhs.departureCityId && lhs.destinationCityId == rhs.destinationCityId;
