@@ -37,6 +37,7 @@
     <ClCompile Include="repositories\EmployeeRepository.cpp" />
     <ClCompile Include="repositories\EmployeeTransferRepository.cpp" />
     <ClCompile Include="repositories\JobRepository.cpp" />
+    <ClCompile Include="repositories\OrderRepository.cpp" />
     <ClCompile Include="repositories\Repository.cpp" />
     <ClCompile Include="repositories\RouteRepository.cpp" />
   </ItemGroup>
@@ -64,6 +65,7 @@
     <ClInclude Include="repositories\EmployeeRepository.h" />
     <ClInclude Include="repositories\EmployeeTransferRepository.h" />
     <ClInclude Include="repositories\JobRepository.h" />
+    <ClInclude Include="repositories\OrderRepository.h" />
     <ClInclude Include="repositories\Repository.h" />
     <ClInclude Include="repositories\RepositoryHub.h" />
     <ClInclude Include="repositories\RepositoryNotFound.h" />
