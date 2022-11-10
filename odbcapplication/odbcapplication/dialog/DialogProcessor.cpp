@@ -47,6 +47,7 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	cout << "5 : Employees" << endl;
 	cout << "6 : Bank Details" << endl;
 	cout << "7 : Employee Transfers" << endl;
+	cout << "8 : Orders" << endl;
 	cout << "q : Exit" << endl << endl;
 
 	cout << "> ";
@@ -72,6 +73,9 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	}
 	else if (*option == "7") {
 		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Employee Transfers"));
+	}
+	else if (*option == "8") {
+		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Orders"));
 	}
 }
 
@@ -215,9 +219,10 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 		DialogFormStep step = route.dialogForm.steps[route.dialogForm.currentStepId];
 		string text;
 
+		/*
 		if (route.dialogForm.currentStepId == 0 || (
-			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_STRING && 
-			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_INT && 
+			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_STRING &&
+			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_INT &&
 			route.dialogForm.steps[route.dialogForm.currentStepId - 1].type != DialogFormFieldType::FT_FLOAT &&
 			route.dialogForm.steps[route.dialogForm.currentStepId].type != DialogFormFieldType::FT_STRING &&
 			route.dialogForm.steps[route.dialogForm.currentStepId].type != DialogFormFieldType::FT_INT &&
@@ -225,6 +230,7 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			)) {
 			getline(cin, text);
 		}
+		*/
 
 		if (step.type == DialogFormFieldType::FT_STRING) {
 			cout << step.title;
@@ -330,6 +336,17 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 			}
 			else {
 				pushRoute(DialogRoute(DialogRouteType::MODEL_PICK, "Employees", 0, ""));
+				routes[routes.size() - 1].errorMessage = step.title;
+				return;
+			}
+		}
+		else if (step.type == DialogFormFieldType::FT_ROUTE) {
+			if (route.pickedModelId != 0) {
+				routes[routes.size() - 1].dialogForm.steps[route.dialogForm.currentStepId].iValue = route.pickedModelId;
+				routes[routes.size() - 1].pickedModelId = 0;
+			}
+			else {
+				pushRoute(DialogRoute(DialogRouteType::MODEL_PICK, "Routes", 0, ""));
 				routes[routes.size() - 1].errorMessage = step.title;
 				return;
 			}
