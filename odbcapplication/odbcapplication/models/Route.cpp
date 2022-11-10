@@ -15,10 +15,10 @@ Route::Route(int id) {
     setDestinationCity(City());
 }
 
-Route::Route(int id, int departureCityId, int destinationCityId, int routeCost) {
+Route::Route(int id, string departureCity, string destinationCity, int routeCost) {
     this->id = id;
-    this->departureCityId = departureCityId;
-    this->destinationCityId = destinationCityId;
+    this->departureCityS = departureCity;
+    this->destinationCityS = destinationCity;
     this->routeCost = routeCost;
 }
 
@@ -104,9 +104,11 @@ Route Route::load(HDBC hDBC) {
     RETCODE retCode;
     SQLLEN cbValue = SQL_NTS;
     HSTMT hStmt;
+    const int LEN = 25;
+    SQLCHAR departureCity[LEN], destinationCity[LEN];
     SQLLEN routeId = 0, departureCityId = 0, destinationCityId = 0, routeCost = 0, len = 0;
 
-    SQLCHAR* sql = (SQLCHAR*)"select id, departure_city_id, destination_sity_id, route_cost from routes WHERE id = ?;";
+    SQLCHAR* sql = (SQLCHAR*)"select routes.id, c.city_name, c2.city_name, route_cost from routes left join cities c on c.id = routes.departure_city_id left join cities c2 on c2.id = routes.destination_city_id WHERE routes.id = ?;";
 
     try {
         checkRetCodeException(SQLAllocHandle(SQL_HANDLE_STMT, hDBC, &hStmt));
@@ -115,16 +117,18 @@ Route Route::load(HDBC hDBC) {
         checkRetCodeException(SQLExecute(hStmt), "Execute stmt");
 
         checkRetCodeException(SQLBindCol(hStmt, 1, SQL_C_LONG, &routeId, 1, &len));
-        checkRetCodeException(SQLBindCol(hStmt, 2, SQL_C_LONG, &departureCityId, 1, &len));
-        checkRetCodeException(SQLBindCol(hStmt, 3, SQL_C_LONG, &destinationCityId, 1, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 2, SQL_C_CHAR, &departureCity, LEN, &len));
+        checkRetCodeException(SQLBindCol(hStmt, 3, SQL_C_CHAR, &destinationCity, LEN, &len));
+
+        //checkRetCodeException(SQLBindCol(hStmt, 2, SQL_C_LONG, &departureCityId, 1, &len));
+        //checkRetCodeException(SQLBindCol(hStmt, 3, SQL_C_LONG, &destinationCityId, 1, &len));
         checkRetCodeException(SQLBindCol(hStmt, 4, SQL_C_LONG, &routeCost, 1, &len));
         checkRetCodeException(SQLFetch(hStmt));
-        return Route((int)routeId, (int)departureCityId, (int)destinationCityId, (int)routeCost);
+        return Route((long long)routeId, string((char*)departureCity), string((char*)destinationCity), (long long)routeCost);
         SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     }
     catch (ActiveRecordException& exc) {
-        cout << "Load clients failed: " << exc.retCode << " " << exc.message << endl;
+        cout << "Load routes failed: " << exc.retCode << " " << exc.message << endl;
     }
-
     return Route();
 }

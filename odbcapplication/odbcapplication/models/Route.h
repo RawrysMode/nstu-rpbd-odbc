@@ -22,10 +22,11 @@ public:
 	int destinationCityId;
 	City departureCity;
 	City destinationCity;
+	string departureCityS, destinationCityS;
 
 	Route();
 	Route(int id);
-	Route(int id, int departureCityId, int destinationCityId, int routeCost);
+	Route(int id, string departureCity, string destinationCity, int routeCost);
 
 
 	bool remove(HDBC hDBC) override;
@@ -40,6 +41,12 @@ public:
 	std::string toString() {
 		char s[512];
 		sprintf_s(s, 512, "Route cost: %d, departure city: %s, destination city: %s", routeCost, departureCity.toString().c_str(), destinationCity.toString().c_str());
+		return string(s);
+	}
+	
+	std::string toString2() {
+		char s[512];
+		sprintf_s(s, 512, "Route cost: %d, departure city: %s, destination city: %s", routeCost, departureCityS.c_str(), destinationCityS.c_str());
 		return string(s);
 	}
 };
