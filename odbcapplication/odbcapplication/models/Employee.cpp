@@ -151,7 +151,7 @@ Employee Employee::load(HDBC hDBC) {
         SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     }
     catch (ActiveRecordException& exc) {
-        cout << "Load clients failed: " << exc.retCode << " " << exc.message << endl;
+        cout << "Load employees failed: " << exc.retCode << " " << exc.message << endl;
     }
 
     return Employee();
