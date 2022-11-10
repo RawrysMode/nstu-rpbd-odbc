@@ -8,6 +8,7 @@
 #include "EmployeeRepository.h"
 #include "BankDetailsRepository.h"
 #include "EmployeeTransferRepository.h"
+#include "OrderRepository.h"
 #include "RepositoryNotFound.h"
 #include "../dialog/DialogForm.h"
 
@@ -24,6 +25,7 @@ public:
 	EmployeeRepository employeeRepository;
 	BankDetailsRepository bankDetailsRepository;
 	EmployeeTransferRepository employeeTransferRepository;
+	OrderRepository orderRepository;
 
 	RepositoryHub() {
 		cityRepository = CityRepository();
@@ -33,6 +35,7 @@ public:
 		employeeRepository = EmployeeRepository();
 		bankDetailsRepository = BankDetailsRepository();
 		employeeTransferRepository = EmployeeTransferRepository();
+		orderRepository = OrderRepository();
 	}
 
 	RepositoryHub(DbConnector dbConnector) {
@@ -43,6 +46,7 @@ public:
 		employeeRepository = EmployeeRepository(dbConnector, &jobRepository);
 		bankDetailsRepository = BankDetailsRepository(dbConnector, &clientRepository, &cityRepository);
 		employeeTransferRepository = EmployeeTransferRepository(dbConnector, &employeeRepository, &jobRepository);
+		orderRepository = OrderRepository(dbConnector, &clientRepository, &employeeRepository, &routeRepository);
 	}
 
 	void init() {
@@ -53,6 +57,7 @@ public:
 		employeeRepository.checkTableExists();
 		bankDetailsRepository.checkTableExists();
 		employeeTransferRepository.checkTableExists();
+		orderRepository.checkTableExists();
 	}
 
 	void getModelViewRouteData(DialogRoute route, int* totalModelsCount, int* pageSize, string search, vector<string>* modelLabels) {
@@ -76,6 +81,9 @@ public:
 		}
 		else if (route.modelName == "Employee Transfers") {
 			employeeTransferRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
+		}
+		else if (route.modelName == "Orders") {
+			orderRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
 		}
 	}
 
@@ -101,6 +109,9 @@ public:
 		else if (route.modelName == "Employee Transfers") {
 			return employeeTransferRepository.loadModels(search, offset)[number].id;
 		}
+		else if (route.modelName == "Orders") {
+			return orderRepository.loadModels(search, offset)[number].id;
+		}
 	}
 
 	DialogForm getModelAddDialogForm(DialogRoute route) {
@@ -121,9 +132,9 @@ public:
 		}
 		else if (route.modelName == "Routes") {
 			return DialogForm({
-				DialogFormStep("Route cost", DialogFormFieldType::FT_INT, "route_cost", ""),
 				DialogFormStep("Select departure city from the list: ", DialogFormFieldType::FT_CITY, "departure_city_id", ""),
-				DialogFormStep("Select destination city from the list: ", DialogFormFieldType::FT_CITY, "destination_city_id", "")
+				DialogFormStep("Select destination city from the list: ", DialogFormFieldType::FT_CITY, "destination_city_id", ""),
+				DialogFormStep("Route cost", DialogFormFieldType::FT_INT, "route_cost", "")
 				});
 		}
 		else if (route.modelName == "Employees") {
@@ -156,6 +167,18 @@ public:
 				DialogFormStep("Order Date", DialogFormFieldType::FT_STRING, "order_date", "")
 				});
 		}
+		else if (route.modelName == "Orders") {
+			return DialogForm({
+				DialogFormStep("Select client from the list: ", DialogFormFieldType::FT_CLIENT, "client_id", ""),
+				DialogFormStep("Select employee from the list: ", DialogFormFieldType::FT_EMPLOYEE, "employee_id", ""),
+				DialogFormStep("Order Date", DialogFormFieldType::FT_STRING, "order_date", ""),
+				DialogFormStep("Select route from the list: ", DialogFormFieldType::FT_ROUTE, "route_id", ""),
+				DialogFormStep("Wagon Number", DialogFormFieldType::FT_INT, "wagon_number", ""),
+				DialogFormStep("Shipping Date", DialogFormFieldType::FT_STRING, "shipping_date", ""),
+				DialogFormStep("Shipping cost", DialogFormFieldType::FT_INT, "shipping_cost", ""),
+				DialogFormStep("Invoice Number", DialogFormFieldType::FT_STRING, "nvc", "")
+				});
+		}
 
 		return DialogForm();
 	}
@@ -182,9 +205,9 @@ public:
 		else if (route.modelName == "Routes") {
 			Route model = routeRepository.loadModels(route.search, route.offset * routeRepository.pageSize)[number];
 			return DialogForm(model.id, {
-				DialogFormStep("Route cost", DialogFormFieldType::FT_INT, "route_cost", model.routeCost),
 				DialogFormStep("Select departure city from the list: ", DialogFormFieldType::FT_CITY, "departure_city_id", model.departureCityId),
-				DialogFormStep("Select destination city from the list: ", DialogFormFieldType::FT_CITY, "destination_city_id", model.destinationCityId)
+				DialogFormStep("Select destination city from the list: ", DialogFormFieldType::FT_CITY, "destination_city_id", model.destinationCityId),
+				DialogFormStep("Route cost", DialogFormFieldType::FT_INT, "route_cost", model.routeCost)
 				});
 		}
 		else if (route.modelName == "Employees") {
@@ -220,6 +243,19 @@ public:
 				DialogFormStep("Order Date", DialogFormFieldType::FT_STRING, "order_date", model.orderDate)
 				});
 		}
+		else if (route.modelName == "Orders") {
+			Order model = orderRepository.loadModels(route.search, route.offset * employeeTransferRepository.pageSize)[number];
+			return DialogForm(model.id, {
+				DialogFormStep("Select client from the list: ", DialogFormFieldType::FT_CLIENT, "client_id", model.clientId),
+				DialogFormStep("Select employee from the list: ", DialogFormFieldType::FT_EMPLOYEE, "employee_id", model.employeeId),
+				DialogFormStep("Order Date", DialogFormFieldType::FT_STRING, "order_date", model.orderDate),
+				DialogFormStep("Select route from the list: ", DialogFormFieldType::FT_ROUTE, "route_id", model.routeId),
+				DialogFormStep("Wagon Number", DialogFormFieldType::FT_INT, "wagon_number", model.wagonNumber),
+				DialogFormStep("Shipping Date", DialogFormFieldType::FT_STRING, "shipping_date", model.shippingDate),
+				DialogFormStep("Shipping Cost", DialogFormFieldType::FT_INT, "shipping_cost", model.shippingCost),
+				DialogFormStep("Invoice Number", DialogFormFieldType::FT_STRING, "nvc", model.invoiceNumber)
+				});
+		}
 
 		return DialogForm();
 	}
@@ -230,9 +266,9 @@ public:
 		}
 		else if (route.modelName == "Routes") {
 			Route routeM = Route(route.dialogForm.modelId);
-			routeM.routeCost = route.dialogForm.steps[0].iValue;
-			routeM.setDepartureCity(cityRepository.loadModelById(route.dialogForm.steps[1].iValue));
-			routeM.setDestinationCity(cityRepository.loadModelById(route.dialogForm.steps[2].iValue));
+			routeM.setDepartureCity(cityRepository.loadModelById(route.dialogForm.steps[0].iValue));
+			routeM.setDestinationCity(cityRepository.loadModelById(route.dialogForm.steps[1].iValue));
+			routeM.routeCost = route.dialogForm.steps[2].iValue;
 			return routeRepository.saveModel(routeM);
 		}
 		else if (route.modelName == "Jobs") {
@@ -279,6 +315,18 @@ public:
 			employeeTransfer.orderDate = route.dialogForm.steps[5].sValue;
 			return employeeTransferRepository.saveModel(employeeTransfer);
 		}
+		else if (route.modelName == "Orders") {
+			Order order = Order(route.dialogForm.modelId);
+			order.setClient(clientRepository.loadModelById(route.dialogForm.steps[0].iValue));
+			order.setEmployee(employeeRepository.loadModelById(route.dialogForm.steps[1].iValue));
+			order.orderDate = route.dialogForm.steps[2].sValue;
+			order.setRoute(routeRepository.loadModelById(route.dialogForm.steps[3].iValue));
+			order.wagonNumber = route.dialogForm.steps[4].iValue;
+			order.shippingDate = route.dialogForm.steps[5].sValue;
+			order.shippingCost = route.dialogForm.steps[6].iValue;
+			order.invoiceNumber = route.dialogForm.steps[7].sValue;
+			return orderRepository.saveModel(order);
+		}
 
 		return false;
 	}
@@ -311,6 +359,10 @@ public:
 		else if (route.modelName == "Employee Transfers") {
 			EmployeeTransfer model = employeeTransferRepository.loadModels(route.search, route.offset * employeeTransferRepository.pageSize)[number];
 			employeeTransferRepository.deleteModel(model);
+		}
+		else if (route.modelName == "Orders") {
+			Order model = orderRepository.loadModels(route.search, route.offset * orderRepository.pageSize)[number];
+			orderRepository.deleteModel(model);
 		}
 
 		return true;

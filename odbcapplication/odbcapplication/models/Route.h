@@ -22,13 +22,17 @@ public:
 	int destinationCityId;
 	City departureCity;
 	City destinationCity;
+	string departureCityS, destinationCityS;
 
 	Route();
 	Route(int id);
+	Route(int id, string departureCity, string destinationCity, int routeCost);
+
 
 	bool remove(HDBC hDBC) override;
 	void setDepartureCity(City departureCity);
 	void setDestinationCity(City destinationCity);
+	Route load(HDBC hDBC);
 
 	friend bool operator==(const Route& lhs, const Route& rhs) {
 		return lhs.id == rhs.id && lhs.departureCityId == rhs.departureCityId && lhs.destinationCityId == rhs.destinationCityId;
@@ -37,6 +41,12 @@ public:
 	std::string toString() {
 		char s[512];
 		sprintf_s(s, 512, "Route cost: %d, departure city: %s, destination city: %s", routeCost, departureCity.toString().c_str(), destinationCity.toString().c_str());
+		return string(s);
+	}
+	
+	std::string toString2() {
+		char s[512];
+		sprintf_s(s, 512, "Route cost: %d, departure city: %s, destination city: %s", routeCost, departureCityS.c_str(), destinationCityS.c_str());
 		return string(s);
 	}
 };

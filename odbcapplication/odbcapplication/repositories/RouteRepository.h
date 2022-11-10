@@ -60,6 +60,20 @@ public:
 	vector<Route> loadModels(string search);
 	vector<Route> loadModels(string search, int offset);
 
+	Route loadModelById(int id) {
+		if (!this->dbConnector.isConnected()) {
+			for (int i = 0; i < models.size(); i++) {
+				if (models[i].id == id) {
+					return models[i];
+				}
+			}
+
+			return Route(id);
+		}
+
+		return Route(id).load(this->dbConnector.getDBC());
+	}
+
 	void getModelViewRouteData(DialogRoute route, int* totalModelsCount, int* modelPageSize, string search, vector<string>* modelLabels) {
 		*totalModelsCount = loadModelsCount(search);
 		*modelPageSize = pageSize;
