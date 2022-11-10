@@ -48,9 +48,9 @@ public:
 	}
 
 	std::string toString() {
-		char s[3000];
-		sprintf_s(s, 3000, "",
-			client.toStringCN().c_str(), employee.toStringFPL().c_str(), orderDate.c_str(), route.toString().c_str(), wagonNumber, shippingDate.c_str(), shippingCost, invoiceNumber.c_str());
+		char s[6000];
+		sprintf_s(s, 6000, "%s, %s, Order Date: %s, %s, Wagon Number: %d, Shipping Date: %s, Shipping Cost: %d, Invoice Number: %s",
+			client.toStringCN().c_str(), employee.toStringFPL().c_str(), orderDate.c_str(), route.toString2().c_str(), wagonNumber, shippingDate.c_str(), shippingCost, invoiceNumber.c_str());
 		return string(s);
 	}
 };
