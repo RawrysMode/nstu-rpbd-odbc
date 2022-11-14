@@ -9,6 +9,7 @@
 #include "BankDetailsRepository.h"
 #include "EmployeeTransferRepository.h"
 #include "OrderRepository.h"
+#include "OrderWagonPlaceRepository.h"
 #include "RepositoryNotFound.h"
 #include "../dialog/DialogForm.h"
 
@@ -26,6 +27,7 @@ public:
 	BankDetailsRepository bankDetailsRepository;
 	EmployeeTransferRepository employeeTransferRepository;
 	OrderRepository orderRepository;
+	OrderWagonPlaceRepository orderWagonPlaceRepository;
 
 	RepositoryHub() {
 		cityRepository = CityRepository();
@@ -36,6 +38,7 @@ public:
 		bankDetailsRepository = BankDetailsRepository();
 		employeeTransferRepository = EmployeeTransferRepository();
 		orderRepository = OrderRepository();
+		orderWagonPlaceRepository = OrderWagonPlaceRepository();
 	}
 
 	RepositoryHub(DbConnector dbConnector) {
@@ -47,6 +50,7 @@ public:
 		bankDetailsRepository = BankDetailsRepository(dbConnector, &clientRepository, &cityRepository);
 		employeeTransferRepository = EmployeeTransferRepository(dbConnector, &employeeRepository, &jobRepository);
 		orderRepository = OrderRepository(dbConnector, &clientRepository, &employeeRepository, &routeRepository);
+		orderWagonPlaceRepository = OrderWagonPlaceRepository(dbConnector, &orderRepository);
 	}
 
 	void init() {
@@ -58,6 +62,7 @@ public:
 		bankDetailsRepository.checkTableExists();
 		employeeTransferRepository.checkTableExists();
 		orderRepository.checkTableExists();
+		orderWagonPlaceRepository.checkTableExists();
 	}
 
 	void getModelViewRouteData(DialogRoute route, int* totalModelsCount, int* pageSize, string search, vector<string>* modelLabels) {
@@ -85,6 +90,9 @@ public:
 		else if (route.modelName == "Orders") {
 			orderRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
 		}
+		else if (route.modelName == "Order Wagon Places") {
+			orderWagonPlaceRepository.getModelViewRouteData(route, totalModelsCount, pageSize, search, modelLabels);
+		}
 	}
 
 	int getModelId(DialogRoute route, int number, string search, int offset) {
@@ -111,6 +119,9 @@ public:
 		}
 		else if (route.modelName == "Orders") {
 			return orderRepository.loadModels(search, offset)[number].id;
+		}
+		else if (route.modelName == "Order Wagon Places") {
+			return orderWagonPlaceRepository.loadModels(search, offset)[number].id;
 		}
 	}
 
@@ -179,6 +190,7 @@ public:
 				DialogFormStep("Invoice Number", DialogFormFieldType::FT_STRING, "nvc", "")
 				});
 		}
+		
 
 		return DialogForm();
 	}

@@ -29,6 +29,7 @@
     <ClCompile Include="models\EmployeeTransfer.cpp" />
     <ClCompile Include="models\Job.cpp" />
     <ClCompile Include="models\Order.cpp" />
+    <ClCompile Include="models\OrderWagonPlace.cpp" />
     <ClCompile Include="models\Route.cpp" />
     <ClCompile Include="odbcapplication.cpp" />
     <ClCompile Include="repositories\BankDetailsRepository.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="repositories\EmployeeTransferRepository.cpp" />
     <ClCompile Include="repositories\JobRepository.cpp" />
     <ClCompile Include="repositories\OrderRepository.cpp" />
+    <ClCompile Include="repositories\OrderWagonPlaceRepository.cpp" />
     <ClCompile Include="repositories\Repository.cpp" />
     <ClCompile Include="repositories\RouteRepository.cpp" />
   </ItemGroup>
@@ -58,6 +60,7 @@
     <ClInclude Include="models\EmployeeTransfer.h" />
     <ClInclude Include="models\Job.h" />
     <ClInclude Include="models\Order.h" />
+    <ClInclude Include="models\OrderWagonPlace.h" />
     <ClInclude Include="models\Route.h" />
     <ClInclude Include="repositories\BankDetailsRepository.h" />
     <ClInclude Include="repositories\CityRepository.h" />
@@ -66,10 +69,15 @@
     <ClInclude Include="repositories\EmployeeTransferRepository.h" />
     <ClInclude Include="repositories\JobRepository.h" />
     <ClInclude Include="repositories\OrderRepository.h" />
+    <ClInclude Include="repositories\OrderWagonPlaceRepository.h" />
     <ClInclude Include="repositories\Repository.h" />
     <ClInclude Include="repositories\RepositoryHub.h" />
     <ClInclude Include="repositories\RepositoryNotFound.h" />
     <ClInclude Include="repositories\RouteRepository.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

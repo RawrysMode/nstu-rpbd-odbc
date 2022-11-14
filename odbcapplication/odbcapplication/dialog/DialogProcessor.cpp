@@ -48,6 +48,7 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	cout << "6 : Bank Details" << endl;
 	cout << "7 : Employee Transfers" << endl;
 	cout << "8 : Orders" << endl;
+	cout << "9 : Order Wagon Places" << endl;
 	cout << "q : Exit" << endl << endl;
 
 	cout << "> ";
@@ -76,6 +77,9 @@ void DialogProcessor::processRouteEntry(DialogRoute route, string* option) {
 	}
 	else if (*option == "8") {
 		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Orders"));
+	}
+	else if (*option == "9") {
+		pushRoute(DialogRoute(DialogRouteType::MODEL_VIEW, "Order Wagon Places"));
 	}
 }
 
