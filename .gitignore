@@ -55,3 +55,4 @@ odbcapplication/odbcapplication/x64/Debug/routerepository.obj.enc
 *.enc
 *.sqlite
 .vs/VSWorkspaceState.json
+*.cd

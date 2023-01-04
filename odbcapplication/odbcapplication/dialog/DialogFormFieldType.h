@@ -8,7 +8,7 @@
 using namespace std;
 
 enum DialogFormFieldType {
-	FT_STRING, FT_INT, FT_FLOAT, FT_CITY, FT_ROUTE, FT_JOB, FT_CLIENT, FT_EMPLOYEE
+	FT_STRING, FT_INT, FT_FLOAT, FT_CITY, FT_ROUTE, FT_JOB, FT_CLIENT, FT_EMPLOYEE, FT_ORDER
 };
 
 #endif

@@ -179,6 +179,19 @@ public:
 				DialogFormStep("Invoice Number", DialogFormFieldType::FT_STRING, "nvc", "")
 				});
 		}
+<<<<<<< Updated upstream
+=======
+		else if (route.modelName == "Order Wagon Places") {
+			return DialogForm({
+				DialogFormStep("Select order from the list: ", DialogFormFieldType::FT_ORDER, "order_id", ""),
+				DialogFormStep("Space Number", DialogFormFieldType::FT_INT, "space_number", ""),
+				DialogFormStep("Size", DialogFormFieldType::FT_STRING, "size", ""),
+				DialogFormStep("Weight", DialogFormFieldType::FT_STRING, "weight", ""),
+				DialogFormStep("Insurance cost", DialogFormFieldType::FT_INT, "insurance_cost", "")
+				});
+		}
+		
+>>>>>>> Stashed changes
 
 		return DialogForm();
 	}
@@ -256,6 +269,16 @@ public:
 				DialogFormStep("Invoice Number", DialogFormFieldType::FT_STRING, "nvc", model.invoiceNumber)
 				});
 		}
+		else if (route.modelName == "Order Wagon Places") {
+			OrderWagonPlace model = orderWagonPlaceRepository.loadModels(route.search, route.offset * employeeTransferRepository.pageSize)[number];
+			return DialogForm(model.id, {
+				DialogFormStep("Select order from the list: ", DialogFormFieldType::FT_ORDER, "order_id", model.orderId),
+				DialogFormStep("Space Number", DialogFormFieldType::FT_INT, "space_number", model.spaceNumber),
+				DialogFormStep("Size number", DialogFormFieldType::FT_STRING, "size", model.size),
+				DialogFormStep("Weight", DialogFormFieldType::FT_STRING, "weight", model.weight),
+				DialogFormStep("Insurance cost", DialogFormFieldType::FT_INT, "insurance_cost", model.insuranceCost)
+				});
+		}
 
 		return DialogForm();
 	}
@@ -327,6 +350,15 @@ public:
 			order.invoiceNumber = route.dialogForm.steps[7].sValue;
 			return orderRepository.saveModel(order);
 		}
+		else if (route.modelName == "Order Wagon Places") {
+			OrderWagonPlace orderWagonPlace = OrderWagonPlace(route.dialogForm.modelId);
+			orderWagonPlace.setOrder(orderRepository.loadModelById(route.dialogForm.steps[0].iValue));
+			orderWagonPlace.spaceNumber = route.dialogForm.steps[1].iValue;
+			orderWagonPlace.size = route.dialogForm.steps[2].sValue;
+			orderWagonPlace.weight = route.dialogForm.steps[3].sValue;
+			orderWagonPlace.insuranceCost = route.dialogForm.steps[4].iValue;
+			return orderWagonPlaceRepository.saveModel(orderWagonPlace);
+		}
 
 		return false;
 	}
@@ -363,6 +395,10 @@ public:
 		else if (route.modelName == "Orders") {
 			Order model = orderRepository.loadModels(route.search, route.offset * orderRepository.pageSize)[number];
 			orderRepository.deleteModel(model);
+		}
+		else if (route.modelName == "Order Wagon Place") {
+			OrderWagonPlace model = orderWagonPlaceRepository.loadModels(route.search, route.offset * orderRepository.pageSize)[number];
+			orderWagonPlaceRepository.deleteModel(model);
 		}
 
 		return true;

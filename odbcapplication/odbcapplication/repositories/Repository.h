@@ -4,7 +4,7 @@
 #include<windows.h>
 #include<sql.h>
 #include<sqlext.h>
-#include<iostream>
+#include <iostream>
 #include <vector>
 #include "tchar.h"
 #include "../DbConnector.h"
