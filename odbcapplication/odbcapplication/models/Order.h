@@ -36,7 +36,7 @@ public:
 	void setRoute(Route route);
 	void setClient(Client client);
 
-	friend bool operator==(const Order lhs, const Order rhs) {
+	friend bool operator==(const Order &lhs, const Order &rhs) {
 		return lhs.employeeId == rhs.employeeId &&
 			lhs.routeId == rhs.routeId &&
 			lhs.clientId == rhs.clientId &&
@@ -53,6 +53,16 @@ public:
 			client.toStringCN().c_str(), employee.toStringFPL().c_str(), orderDate.c_str(), route.toString2().c_str(), wagonNumber, shippingDate.c_str(), shippingCost, invoiceNumber.c_str());
 		return string(s);
 	}
+<<<<<<< Updated upstream
+=======
+	
+	std::string toStringWSS() {
+		char s[6000];
+		sprintf_s(s, 6000, "Client: %s, Wagon Number: %d, Shipping Date: %s, Shipping Cost: %d",
+			companyName.c_str(), wagonNumber, shippingDate.c_str(), shippingCost);
+		return string(s);
+	}
+>>>>>>> Stashed changes
 };
 
 #endif

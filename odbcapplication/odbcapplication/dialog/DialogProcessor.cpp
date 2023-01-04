@@ -351,6 +351,17 @@ void DialogProcessor::processRouteModelAdd(DialogRoute route, string* option) {
 				return;
 			}
 		}
+		else if (step.type == DialogFormFieldType::FT_ORDER) {
+			if (route.pickedModelId != 0) {
+				routes[routes.size() - 1].dialogForm.steps[route.dialogForm.currentStepId].iValue = route.pickedModelId;
+				routes[routes.size() - 1].pickedModelId = 0;
+			}
+			else {
+				pushRoute(DialogRoute(DialogRouteType::MODEL_PICK, "Orders", 0, ""));
+				routes[routes.size() - 1].errorMessage = step.title;
+				return;
+			}
+		}
 
 		routes[routes.size() - 1].dialogForm.nextStep();
 	}
